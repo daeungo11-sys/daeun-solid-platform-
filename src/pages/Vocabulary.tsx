@@ -6,14 +6,11 @@ import {
   getVocabularyForReview,
   deleteVocabulary,
   getUserLevel,
-  getTestResults,
   saveTestResult,
-  deleteTestResult,
-  getLevelName,
   type VocabularyItem,
   type CEFRLevel,
 } from '../lib/storage';
-import { getRandomWordsByLevel, type RecommendedWord } from '../lib/recommendedWords';
+import { getRandomWordsByLevel } from '../lib/recommendedWords';
 import { useLanguage } from '../contexts/LanguageContext';
 import './Vocabulary.css';
 

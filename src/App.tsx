@@ -8,7 +8,6 @@ import Reading from './pages/Reading'
 import Calendar from './pages/Calendar'
 import LevelTest from './pages/LevelTest'
 import MyPage from './pages/MyPage'
-import AIFeedback from './pages/AIFeedback'
 import Correction from './pages/Correction'
 import Simulator from './pages/Simulator'
 import Vocabulary from './pages/Vocabulary'
@@ -109,7 +108,6 @@ function AppContent() {
             <Route path="/simulator" element={<Simulator />} />
             <Route path="/vocabulary" element={<Vocabulary />} />
             <Route path="/ai-coach" element={<AICoach />} />
-            <Route path="/ai-feedback" element={<AIFeedback />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/mypage" element={<MyPage />} />
           </Routes>
