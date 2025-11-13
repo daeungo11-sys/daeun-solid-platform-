@@ -163,74 +163,35 @@ export default function MyPage() {
         </h2>
         <div className="stats-grid">
           <div className="stat-card speaking">
-            <div className="stat-icon">
-              <Target size={32} />
+            <div className="icon-container speaking">
+              <Target size={40} />
             </div>
-            <div className="stat-content">
-              <h3>말하기</h3>
-              <div className="stat-numbers">
-                <span className="stat-value">{statistics.speaking.completed}</span>
-                <span className="stat-label">/ {statistics.speaking.total}</span>
-              </div>
-              <div className="stat-score">
-                평균 점수: <strong>{statistics.speaking.averageScore}점</strong>
-              </div>
-              <div className="progress-bar-stat">
-                <div
-                  className="progress-fill-stat speaking-fill"
-                  style={{
-                    width: `${(statistics.speaking.completed / statistics.speaking.total) * 100}%`
-                  }}
-                />
-              </div>
+            <h3>말하기</h3>
+            <p>완료: {statistics.speaking.completed} / {statistics.speaking.total}</p>
+            <div className="feature-tags">
+              <span className="tag">평균 {statistics.speaking.averageScore}점</span>
             </div>
           </div>
 
           <div className="stat-card writing">
-            <div className="stat-icon">
-              <BookOpen size={32} />
+            <div className="icon-container writing">
+              <BookOpen size={40} />
             </div>
-            <div className="stat-content">
-              <h3>쓰기</h3>
-              <div className="stat-numbers">
-                <span className="stat-value">{statistics.writing.completed}</span>
-                <span className="stat-label">/ {statistics.writing.total}</span>
-              </div>
-              <div className="stat-score">
-                평균 점수: <strong>{statistics.writing.averageScore}점</strong>
-              </div>
-              <div className="progress-bar-stat">
-                <div
-                  className="progress-fill-stat writing-fill"
-                  style={{
-                    width: `${(statistics.writing.completed / statistics.writing.total) * 100}%`
-                  }}
-                />
-              </div>
+            <h3>쓰기</h3>
+            <p>완료: {statistics.writing.completed} / {statistics.writing.total}</p>
+            <div className="feature-tags">
+              <span className="tag">평균 {statistics.writing.averageScore}점</span>
             </div>
           </div>
 
           <div className="stat-card reading">
-            <div className="stat-icon">
-              <TrendingUp size={32} />
+            <div className="icon-container reading">
+              <TrendingUp size={40} />
             </div>
-            <div className="stat-content">
-              <h3>읽기</h3>
-              <div className="stat-numbers">
-                <span className="stat-value">{statistics.reading.completed}</span>
-                <span className="stat-label">/ {statistics.reading.total}</span>
-              </div>
-              <div className="stat-score">
-                평균 점수: <strong>{statistics.reading.averageScore}점</strong>
-              </div>
-              <div className="progress-bar-stat">
-                <div
-                  className="progress-fill-stat reading-fill"
-                  style={{
-                    width: `${(statistics.reading.completed / statistics.reading.total) * 100}%`
-                  }}
-                />
-              </div>
+            <h3>읽기</h3>
+            <p>완료: {statistics.reading.completed} / {statistics.reading.total}</p>
+            <div className="feature-tags">
+              <span className="tag">평균 {statistics.reading.averageScore}점</span>
             </div>
           </div>
         </div>
