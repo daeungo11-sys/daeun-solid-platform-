@@ -156,6 +156,9 @@
   transition: all 0.3s;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .weakness-analysis:hover,
@@ -164,6 +167,40 @@
   transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
   border-color: var(--primary);
+}
+
+.weakness-analysis::before,
+.grammar-analysis::before,
+.vocabulary-analysis::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+
+.weakness-analysis:hover::before,
+.grammar-analysis:hover::before,
+.vocabulary-analysis:hover::before {
+  transform: scaleX(1);
+}
+
+.weakness-analysis h2,
+.grammar-analysis h2,
+.vocabulary-analysis h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.weakness-analysis > *:not(h2),
+.grammar-analysis > *:not(h2),
+.vocabulary-analysis > *:not(h2) {
+  flex: 1;
 }
 
 .weakness-list {
@@ -185,6 +222,8 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .grammar-item {
@@ -235,6 +274,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .vocabulary-item {
@@ -306,11 +347,30 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-left: 4px solid var(--danger);
   transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
 }
 
 .wrong-answer-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary);
+}
+
+.wrong-answer-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+
+.wrong-answer-card:hover::before {
+  transform: scaleX(1);
 }
 
 .wrong-answer-header {
