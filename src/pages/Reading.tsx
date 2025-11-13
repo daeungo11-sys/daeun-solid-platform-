@@ -273,8 +273,28 @@ export default function Reading() {
 
             {showFeedback && (
               <div className="explanation-card">
-                <h4>해설</h4>
-                <p>{currentQ.explanation}</p>
+                <div className={`feedback-header ${answers[answers.length - 1]?.isCorrect ? 'correct' : 'incorrect'}`}>
+                  {answers[answers.length - 1]?.isCorrect ? (
+                    <>
+                      <CheckCircle size={24} />
+                      <h4>정답입니다!</h4>
+                    </>
+                  ) : (
+                    <>
+                      <XCircle size={24} />
+                      <h4>오답입니다</h4>
+                    </>
+                  )}
+                </div>
+                <div className="explanation-content">
+                  <h5>해설</h5>
+                  <p>{currentQ.explanation}</p>
+                  {!answers[answers.length - 1]?.isCorrect && (
+                    <div className="correct-answer-hint">
+                      <strong>정답:</strong> {String.fromCharCode(65 + currentQ.correct)}. {currentQ.options[currentQ.correct]}
+                    </div>
+                  )}
+                </div>
                 <button className="next-button" onClick={handleNext}>
                   {currentQuestion < questions.length - 1 ? '다음 문제' : '결과 보기'}
                 </button>

@@ -71,11 +71,34 @@ export default function Speaking() {
   const handleSubmit = async () => {
     if (!audioBlob) return
     
-    // Simulate AI feedback
+    // Generate dynamic feedback based on recording duration and question
+    const recordingDuration = 180 - timeLeft
+    const isShort = recordingDuration < 60
+    const isLong = recordingDuration > 150
+    
+    // Simulate AI feedback based on different scenarios
+    let pronunciation = ""
+    let grammar = ""
+    let overall = ""
+    
+    if (isShort) {
+      pronunciation = "녹음 시간이 짧습니다. 더 자세한 설명을 위해 시간을 충분히 활용하세요. 발음의 명확성을 높이기 위해 각 단어를 천천히 발음해보세요."
+      grammar = "답변을 더 확장하면 문법 실력을 더 잘 보여줄 수 있습니다. 복문과 다양한 시제를 활용해보세요."
+      overall = "답변의 길이가 짧습니다. 구체적인 예시와 감정을 추가하면 더 풍부한 답변이 됩니다. 다음에는 더 자세히 설명해보세요."
+    } else if (isLong) {
+      pronunciation = "충분한 시간을 활용하셨습니다. 전체적으로 명확한 발음을 유지했습니다. 'significant'와 'experience'의 강세 패턴을 더 자연스럽게 개선하세요."
+      grammar = "문법적으로 정확합니다. 'It was significant to me' 표현이 적절합니다. 다양한 문장 구조를 잘 사용하셨습니다."
+      overall = "훌륭한 답변입니다! 구체적인 사례와 감정을 잘 연결해서 설명했습니다. 시간 활용이 효율적이었고, 내용이 풍부합니다."
+    } else {
+      pronunciation = "적절한 길이의 답변입니다. 발음이 전반적으로 명확합니다. 일부 단어의 강세를 더 자연스럽게 하면 더 좋겠습니다."
+      grammar = "문법적으로 대부분 정확합니다. 'It was significant to me' 같은 표현이 적절합니다. 더 다양한 문장 구조를 시도해보세요."
+      overall = "좋은 답변입니다. 구체적인 사례와 감정을 연결해서 설명했습니다. 시간 활용이 적절했습니다."
+    }
+    
     setFeedback({
-      pronunciation: "전체적으로 명확한 발음을 유지했습니다. 'significant'와 'experience'의 강세 패턴을 더 자연스럽게 개선하세요.",
-      grammar: "문법적으로 정확합니다. 'It was significant to me' 표현이 적절합니다. 더 다양한 문장 구조를 사용하면 좋겠습니다.",
-      overall: "좋은 답변입니다. 구체적인 사례와 감정을 잘 연결해서 설명했습니다. 시간 활용이 효율적이었습니다."
+      pronunciation,
+      grammar,
+      overall
     })
   }
 

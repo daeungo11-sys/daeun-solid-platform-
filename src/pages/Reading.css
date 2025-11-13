@@ -210,16 +210,80 @@
   margin-top: 1.5rem;
 }
 
-.explanation-card h4 {
-  font-size: 1.125rem;
-  margin-bottom: 0.75rem;
-  color: var(--text-primary);
+.feedback-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
 }
 
-.explanation-card p {
+.feedback-header.correct {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+  border: 2px solid var(--success);
+}
+
+.feedback-header.incorrect {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+  border: 2px solid var(--danger);
+}
+
+.feedback-header h4 {
+  font-size: 1.25rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+.feedback-header.correct h4 {
+  color: var(--success);
+}
+
+.feedback-header.incorrect h4 {
+  color: var(--danger);
+}
+
+.feedback-header svg {
+  flex-shrink: 0;
+}
+
+.feedback-header.correct svg {
+  color: var(--success);
+}
+
+.feedback-header.incorrect svg {
+  color: var(--danger);
+}
+
+.explanation-content {
+  margin-bottom: 1rem;
+}
+
+.explanation-content h5 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.explanation-content p {
   line-height: 1.6;
   color: var(--text-secondary);
   margin-bottom: 1rem;
+}
+
+.correct-answer-hint {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(16, 185, 129, 0.1);
+  border-left: 4px solid var(--success);
+  border-radius: 0.5rem;
+  color: var(--text-primary);
+}
+
+.correct-answer-hint strong {
+  color: var(--success);
+  font-weight: 700;
 }
 
 .next-button {
