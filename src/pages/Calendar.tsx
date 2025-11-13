@@ -1,34 +1,22 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Calendar as CalendarIcon, Flag, Edit2, Trash2 } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
+import { getDiaryEntries, addDiaryEntry, updateDiaryEntry, deleteDiaryEntry, clearSharedData, type DiaryEntry } from '../lib/storage'
 import './Calendar.css'
-
-interface DiaryEntry {
-  id: string
-  date: string
-  type: 'speaking' | 'writing' | 'reading'
-  difficulty: string
-  notes: string
-}
 
 export default function Calendar() {
   const { t } = useLanguage()
-  const [entries, setEntries] = useState<DiaryEntry[]>([
-    {
-      id: '1',
-      date: '2024-01-15',
-      type: 'speaking',
-      difficulty: '중',
-      notes: '발음 교정이 필요합니다. 특히 r과 l 구분이 어렵습니다.'
-    },
-    {
-      id: '2',
-      date: '2024-01-16',
-      type: 'reading',
-      difficulty: '상',
-      notes: '토익 지문 이해도 향상. 어휘 확장이 필요합니다.'
-    }
-  ])
+  const [entries, setEntries] = useState<DiaryEntry[]>([])
+
+  // 컴포넌트 마운트 시 기존 공유 데이터 초기화 및 사용자별 데이터 로드
+  useEffect(() => {
+    // 기존 공유 데이터 초기화 (한 번만 실행)
+    clearSharedData()
+    
+    // 사용자별 데이터 로드
+    const loadedEntries = getDiaryEntries()
+    setEntries(loadedEntries)
+  }, [])
   
   const [showModal, setShowModal] = useState(false)
   const [selectedDate, setSelectedDate] = useState<string>('')
@@ -84,23 +72,27 @@ export default function Calendar() {
 
   const handleSaveEntry = () => {
     if (selectedEntry) {
+      // 기존 항목 수정
+      const updatedEntry = { ...selectedEntry, ...formData }
+      updateDiaryEntry(selectedEntry.id, updatedEntry)
       setEntries(entries.map(e => 
-        e.id === selectedEntry.id 
-          ? { ...selectedEntry, ...formData }
-          : e
+        e.id === selectedEntry.id ? updatedEntry : e
       ))
     } else {
+      // 새 항목 추가
       const newEntry: DiaryEntry = {
         id: Date.now().toString(),
         date: selectedDate,
         ...formData
       }
+      addDiaryEntry(newEntry)
       setEntries([...entries, newEntry])
     }
     setShowModal(false)
   }
 
   const handleDeleteEntry = (id: string) => {
+    deleteDiaryEntry(id)
     setEntries(entries.filter(e => e.id !== id))
   }
 
