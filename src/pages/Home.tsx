@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className="home">
       <div className="hero">
-        <h1>AI와 함께하는 영어 학습</h1>
+        <h1>Learn English with AI</h1>
         <p>말하기, 쓰기, 읽기를 종합적으로 연습하며 영어 실력을 한 단계 끌어올리세요</p>
       </div>
 
