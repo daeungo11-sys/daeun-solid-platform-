@@ -33,24 +33,26 @@
 }
 
 .feature-card {
-  background: var(--surface);
+  background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 1rem;
-  padding: 2rem;
+  border-radius: 24px;
+  padding: 2.5rem;
   text-decoration: none;
   color: inherit;
-  transition: all 0.3s;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   height: 100%;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .feature-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-  border-color: var(--primary);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--primary-light);
 }
 
 .feature-card::before {
@@ -70,14 +72,39 @@
 }
 
 .icon-container {
-  width: 80px;
-  height: 80px;
-  border-radius: 1rem;
+  width: 90px;
+  height: 90px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.icon-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.feature-card:hover .icon-container::before {
+  opacity: 1;
+}
+
+.feature-card:hover .icon-container {
+  transform: rotate(5deg) scale(1.1);
+  box-shadow: 0 12px 28px rgba(99, 102, 241, 0.4);
 }
 
 .icon-container.speaking {

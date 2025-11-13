@@ -1,34 +1,55 @@
 .ai-coach-page {
   padding: 2rem;
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
 .ai-coach-container h1 {
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin-bottom: 0.5rem;
-  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 .coach-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: var(--card-bg);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
 }
 
 .coach-header p {
   color: var(--text-secondary);
+  font-size: 1.0625rem;
+  line-height: 1.7;
 }
 
 .level-badge {
-  background: rgba(99, 102, 241, 0.1);
-  padding: 1rem 1.5rem;
-  border-radius: 0.75rem;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(129, 140, 248, 0.1) 100%);
+  padding: 1.25rem 1.75rem;
+  border-radius: 16px;
   text-align: center;
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  border: 2px solid rgba(99, 102, 241, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.level-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+  border-color: rgba(99, 102, 241, 0.4);
 }
 
 .level-label {
@@ -46,14 +67,17 @@
 
 .chat-container {
   background: var(--card-bg);
-  border-radius: 1rem;
-  box-shadow: var(--shadow);
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   height: calc(100vh - 400px);
   min-height: 500px;
   max-height: 700px;
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .messages-area {
@@ -81,20 +105,29 @@
 }
 
 .message-bubble {
-  padding: 0.75rem 1rem;
-  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 18px;
   word-wrap: break-word;
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
 }
 
 .message.user .message-bubble {
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   color: white;
+  border-bottom-right-radius: 4px;
 }
 
 .message.assistant .message-bubble {
   background: var(--bg);
   color: var(--text-primary);
   border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+
+.message-bubble:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
 }
 
 .message-text {
@@ -154,20 +187,41 @@
 }
 
 .quick-question-btn {
-  padding: 0.75rem;
+  padding: 0.875rem 1rem;
   background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
+  border: 2px solid var(--border);
+  border-radius: 12px;
   text-align: left;
   font-size: 0.875rem;
   color: var(--text-primary);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
+
+.quick-question-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.quick-question-btn:hover::before {
+  left: 100%;
 }
 
 .quick-question-btn:hover {
-  background: rgba(99, 102, 241, 0.1);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(129, 140, 248, 0.1) 100%);
   border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+  color: var(--primary);
 }
 
 .input-area {
@@ -180,18 +234,21 @@
 
 .message-input {
   flex: 1;
-  padding: 0.75rem 1rem;
+  padding: 1rem 1.25rem;
   border: 2px solid var(--border);
-  border-radius: 0.5rem;
+  border-radius: 14px;
   font-size: 1rem;
   background: var(--card-bg);
   color: var(--text-primary);
-  transition: border-color 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
 }
 
 .message-input:focus {
   outline: none;
   border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  transform: translateY(-1px);
 }
 
 .message-input:disabled {
@@ -200,19 +257,38 @@
 }
 
 .send-button {
-  padding: 0.75rem 1.5rem;
-  background: var(--primary);
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   color: white;
   border: none;
-  border-radius: 0.5rem;
-  font-weight: 500;
+  border-radius: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
+  box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
+  position: relative;
+  overflow: hidden;
+}
+
+.send-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.send-button:hover:not(:disabled)::before {
+  left: 100%;
 }
 
 .send-button:hover:not(:disabled) {
-  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px 0 rgba(99, 102, 241, 0.5);
 }
 
 .send-button:disabled {
@@ -221,11 +297,20 @@
 }
 
 .guide-section {
-  margin-top: 2rem;
+  margin-top: 2.5rem;
   background: var(--card-bg);
-  padding: 2rem;
-  border-radius: 0.75rem;
-  box-shadow: var(--shadow);
+  padding: 2.5rem;
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.guide-section:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
 }
 
 .guide-section h3 {
@@ -275,6 +360,7 @@
     grid-template-columns: 1fr;
   }
 }
+
 
 
 
