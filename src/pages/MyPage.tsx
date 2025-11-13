@@ -1,37 +1,8 @@
 import { useState, useEffect } from 'react'
-import { TrendingUp, BookOpen, AlertCircle, Bookmark, Target, FileText } from 'lucide-react'
+import { TrendingUp, BookOpen, AlertCircle, Bookmark, Target, FileText, X } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
+import { getWrongAnswers, getMyPageStatistics, type WrongAnswer, type MyPageStatistics, clearSharedData } from '../lib/storage'
 import './MyPage.css'
-
-interface WrongAnswer {
-  id: number
-  question: string
-  type: string
-  myAnswer: string
-  correctAnswer: string
-  explanation: string
-  date: string
-  grammar?: string[]
-  vocabulary?: string[]
-}
-
-interface Statistics {
-  speaking: {
-    total: number
-    completed: number
-    averageScore: number
-  }
-  writing: {
-    total: number
-    completed: number
-    averageScore: number
-  }
-  reading: {
-    total: number
-    completed: number
-    averageScore: number
-  }
-}
 
 interface GrammarAnalysis {
   grammar: string
@@ -45,57 +16,30 @@ interface VocabularyAnalysis {
   difficulty: 'easy' | 'medium' | 'hard'
 }
 
-// Mock 데이터
-const mockWrongAnswers: WrongAnswer[] = [
-  {
-    id: 1,
-    question: '다음 중 빈칸에 들어갈 가장 적절한 단어는?',
-    type: '객관식',
-    myAnswer: 'what',
-    correctAnswer: 'which',
-    explanation: 'which는 한정적 관계대명사로, 앞에 나온 명사를 한정할 때 사용합니다.',
-    date: '2024-01-15',
-    grammar: ['관계대명사'],
-    vocabulary: ['which']
-  },
-  {
-    id: 2,
-    question: '"I have been studying English for three years."에서 사용된 시제는?',
-    type: '객관식',
-    myAnswer: '과거완료',
-    correctAnswer: '현재완료',
-    explanation: '현재완료는 have/has + p.p 형태로, 과거부터 현재까지 계속된 동작을 나타냅니다.',
-    date: '2024-01-15',
-    grammar: ['현재완료'],
-    vocabulary: []
-  }
-]
-
-const mockStatistics: Statistics = {
-  speaking: {
-    total: 30,
-    completed: 25,
-    averageScore: 85
-  },
-  writing: {
-    total: 30,
-    completed: 20,
-    averageScore: 78
-  },
-  reading: {
-    total: 30,
-    completed: 28,
-    averageScore: 92
-  }
-}
-
 export default function MyPage() {
   const { t } = useLanguage()
-  const [wrongAnswers] = useState<WrongAnswer[]>(mockWrongAnswers)
-  const [statistics] = useState<Statistics>(mockStatistics)
+  const [wrongAnswers, setWrongAnswers] = useState<WrongAnswer[]>([])
+  const [statistics, setStatistics] = useState<MyPageStatistics>({
+    speaking: { total: 0, completed: 0, averageScore: 0 },
+    writing: { total: 0, completed: 0, averageScore: 0 },
+    reading: { total: 0, completed: 0, averageScore: 0 }
+  })
+  const [showWeaknessDetail, setShowWeaknessDetail] = useState(false)
   const [grammarAnalysis, setGrammarAnalysis] = useState<GrammarAnalysis[]>([])
   const [vocabularyAnalysis, setVocabularyAnalysis] = useState<VocabularyAnalysis[]>([])
   const [weaknesses, setWeaknesses] = useState<string[]>([])
+
+  useEffect(() => {
+    // 기존 공유 데이터 초기화
+    clearSharedData()
+    
+    // 사용자별 데이터 로드
+    const loadedWrongAnswers = getWrongAnswers()
+    const loadedStatistics = getMyPageStatistics()
+    
+    setWrongAnswers(loadedWrongAnswers)
+    setStatistics(loadedStatistics)
+  }, [])
 
   useEffect(() => {
     // 문법 분석
@@ -138,9 +82,9 @@ export default function MyPage() {
 
     // 약점 진단
     const weaknessList: string[] = []
-    if (statistics.speaking.averageScore < 80) weaknessList.push('말하기')
-    if (statistics.writing.averageScore < 80) weaknessList.push('쓰기')
-    if (statistics.reading.averageScore < 80) weaknessList.push('읽기')
+    if (statistics.speaking.averageScore < 80 && statistics.speaking.completed > 0) weaknessList.push('말하기')
+    if (statistics.writing.averageScore < 80 && statistics.writing.completed > 0) weaknessList.push('쓰기')
+    if (statistics.reading.averageScore < 80 && statistics.reading.completed > 0) weaknessList.push('읽기')
     
     grammarList.forEach((g) => {
       if (g.percentage > 30) {
@@ -150,6 +94,12 @@ export default function MyPage() {
 
     setWeaknesses(weaknessList)
   }, [wrongAnswers, statistics])
+
+  const handleWeaknessClick = () => {
+    if (weaknesses.length > 0) {
+      setShowWeaknessDetail(true)
+    }
+  }
 
   return (
     <div className="mypage">
@@ -195,7 +145,7 @@ export default function MyPage() {
           </div>
         </div>
 
-        <div className="feature-card weakness">
+        <div className="feature-card weakness" onClick={handleWeaknessClick} style={{ cursor: weaknesses.length > 0 ? 'pointer' : 'default' }}>
           <div className="icon-container weakness">
             <AlertCircle size={40} />
           </div>
@@ -206,6 +156,7 @@ export default function MyPage() {
               <>
                 <span className="tag"><AlertCircle size={14} /> {weaknesses.length}{t.weaknessFoundLabel}</span>
                 <span className="tag"><Target size={14} /> {t.autoAnalysis}</span>
+                <span className="tag" style={{ marginTop: '0.5rem', display: 'block', fontSize: '0.85rem', opacity: 0.8 }}>{t.clickToViewDetail}</span>
               </>
             ) : (
               <span className="tag"><TrendingUp size={14} /> {t.excellentScore}</span>
@@ -267,6 +218,99 @@ export default function MyPage() {
           </div>
         </div>
       </div>
+
+      {showWeaknessDetail && (
+        <div className="modal-overlay" onClick={() => setShowWeaknessDetail(false)}>
+          <div className="modal-content weakness-detail" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>{t.weaknessDiagnosis} {t.detailedAnalysis}</h2>
+              <button onClick={() => setShowWeaknessDetail(false)} className="close-button">
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="weakness-detail-content">
+              <div className="weakness-section">
+                <h3>📊 {t.areaWeakness}</h3>
+                <div className="weakness-list">
+                  {statistics.speaking.averageScore < 80 && statistics.speaking.completed > 0 && (
+                    <div className="weakness-item">
+                      <div className="weakness-header">
+                        <span className="weakness-name">{t.speaking}</span>
+                        <span className="weakness-score">{statistics.speaking.averageScore}{t.pointUnit}</span>
+                      </div>
+                      <div className="weakness-progress">
+                        <div className="progress-bar">
+                          <div className="progress-fill" style={{ width: `${statistics.speaking.averageScore}%`, backgroundColor: '#ef4444' }}></div>
+                        </div>
+                      </div>
+                      <p className="weakness-desc">{t.belowAverage}</p>
+                    </div>
+                  )}
+                  {statistics.writing.averageScore < 80 && statistics.writing.completed > 0 && (
+                    <div className="weakness-item">
+                      <div className="weakness-header">
+                        <span className="weakness-name">{t.writing}</span>
+                        <span className="weakness-score">{statistics.writing.averageScore}{t.pointUnit}</span>
+                      </div>
+                      <div className="weakness-progress">
+                        <div className="progress-bar">
+                          <div className="progress-fill" style={{ width: `${statistics.writing.averageScore}%`, backgroundColor: '#ef4444' }}></div>
+                        </div>
+                      </div>
+                      <p className="weakness-desc">{t.belowAverage}</p>
+                    </div>
+                  )}
+                  {statistics.reading.averageScore < 80 && statistics.reading.completed > 0 && (
+                    <div className="weakness-item">
+                      <div className="weakness-header">
+                        <span className="weakness-name">{t.reading}</span>
+                        <span className="weakness-score">{statistics.reading.averageScore}{t.pointUnit}</span>
+                      </div>
+                      <div className="weakness-progress">
+                        <div className="progress-bar">
+                          <div className="progress-fill" style={{ width: `${statistics.reading.averageScore}%`, backgroundColor: '#ef4444' }}></div>
+                        </div>
+                      </div>
+                      <p className="weakness-desc">{t.belowAverage}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {grammarAnalysis.length > 0 && (
+                <div className="weakness-section">
+                  <h3>📚 {t.grammarWeakness}</h3>
+                  <div className="weakness-list">
+                    {grammarAnalysis.filter(g => g.percentage > 30).map((g, idx) => (
+                      <div key={idx} className="weakness-item">
+                        <div className="weakness-header">
+                          <span className="weakness-name">{g.grammar}</span>
+                          <span className="weakness-score">{g.count}{t.errorCount} ({g.percentage.toFixed(1)}%)</span>
+                        </div>
+                        <div className="weakness-progress">
+                          <div className="progress-bar">
+                            <div className="progress-fill" style={{ width: `${g.percentage}%`, backgroundColor: '#f59e0b' }}></div>
+                          </div>
+                        </div>
+                        <p className="weakness-desc">{t.frequentMistakes}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {weaknesses.length === 0 && (
+                <div className="no-weakness-message">
+                  <TrendingUp size={48} />
+                  <p>{t.excellentScore}</p>
+                  <p>{t.noWeaknessFound}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

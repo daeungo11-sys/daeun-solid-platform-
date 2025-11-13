@@ -17,7 +17,7 @@ const mockQuestions: Question[] = [
   {
     id: 1,
     type: 'multiple',
-    question: '다음 중 빈칸에 들어갈 가장 적절한 단어는?',
+    question: '다음 문장의 빈칸에 들어갈 가장 적절한 단어는?\n\n"I don\'t know ___ book you want."',
     options: ['which', 'what', 'where', 'when'],
     correctAnswer: 'which',
     points: 1
@@ -396,7 +396,7 @@ export default function LevelTest() {
 
         <div className="question">
           <h2>{currentQ.question}</h2>
-          <div className="points">{t.points}: {currentQ.points}{t.point}</div>
+          <div className="points">{t.points}: {currentQ.points}{t.pointUnit}</div>
         </div>
 
         <div className="answer-section">

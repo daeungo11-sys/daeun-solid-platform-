@@ -80,6 +80,36 @@ export interface DiaryEntry {
   notes: string;
 }
 
+export interface WrongAnswer {
+  id: string;
+  question: string;
+  type: string;
+  myAnswer: string;
+  correctAnswer: string;
+  explanation: string;
+  date: string;
+  grammar?: string[];
+  vocabulary?: string[];
+}
+
+export interface MyPageStatistics {
+  speaking: {
+    total: number;
+    completed: number;
+    averageScore: number;
+  };
+  writing: {
+    total: number;
+    completed: number;
+    averageScore: number;
+  };
+  reading: {
+    total: number;
+    completed: number;
+    averageScore: number;
+  };
+}
+
 // 사용자 고유 ID 생성 및 관리
 export function getUserId(): string {
   if (typeof window === 'undefined') return 'default';
@@ -368,6 +398,72 @@ export function deleteDiaryEntry(id: string): void {
   saveDiaryEntries(entries.filter(e => e.id !== id));
 }
 
+// 오답 노트 (MyPage)
+export function getWrongAnswers(): WrongAnswer[] {
+  if (typeof window === 'undefined') return [];
+  const data = localStorage.getItem(getUserKey('wrongAnswers'));
+  return data ? JSON.parse(data) : [];
+}
+
+export function addWrongAnswer(answer: Omit<WrongAnswer, 'id'>): void {
+  if (typeof window === 'undefined') return;
+  const answers = getWrongAnswers();
+  const newAnswer: WrongAnswer = {
+    ...answer,
+    id: Date.now().toString()
+  };
+  answers.push(newAnswer);
+  localStorage.setItem(getUserKey('wrongAnswers'), JSON.stringify(answers));
+}
+
+export function deleteWrongAnswer(id: string): void {
+  if (typeof window === 'undefined') return;
+  const answers = getWrongAnswers();
+  localStorage.setItem(getUserKey('wrongAnswers'), JSON.stringify(answers.filter(a => a.id !== id)));
+}
+
+// 마이페이지 통계
+export function getMyPageStatistics(): MyPageStatistics {
+  if (typeof window === 'undefined') {
+    return {
+      speaking: { total: 0, completed: 0, averageScore: 0 },
+      writing: { total: 0, completed: 0, averageScore: 0 },
+      reading: { total: 0, completed: 0, averageScore: 0 }
+    };
+  }
+  const data = localStorage.getItem(getUserKey('myPageStatistics'));
+  if (data) {
+    return JSON.parse(data);
+  }
+  
+  // 기본값 반환
+  return {
+    speaking: { total: 0, completed: 0, averageScore: 0 },
+    writing: { total: 0, completed: 0, averageScore: 0 },
+    reading: { total: 0, completed: 0, averageScore: 0 }
+  };
+}
+
+export function saveMyPageStatistics(stats: MyPageStatistics): void {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(getUserKey('myPageStatistics'), JSON.stringify(stats));
+}
+
+export function updateMyPageStatistics(type: 'speaking' | 'writing' | 'reading', score: number): void {
+  if (typeof window === 'undefined') return;
+  const stats = getMyPageStatistics();
+  const typeStats = stats[type];
+  
+  typeStats.total += 1;
+  typeStats.completed += 1;
+  
+  // 평균 점수 계산
+  const totalScore = typeStats.averageScore * (typeStats.completed - 1) + score;
+  typeStats.averageScore = Math.round(totalScore / typeStats.completed);
+  
+  saveMyPageStatistics(stats);
+}
+
 // 모든 사용자 데이터 초기화 (기존 공유 데이터 제거)
 export function clearSharedData(): void {
   if (typeof window === 'undefined') return;
@@ -381,7 +477,9 @@ export function clearSharedData(): void {
     'aiCoachHistory',
     'userLevel',
     'vocabulary',
-    'testResults'
+    'testResults',
+    'wrongAnswers',
+    'myPageStatistics'
   ];
   
   sharedKeys.forEach(key => {

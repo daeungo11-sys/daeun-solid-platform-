@@ -143,6 +143,146 @@
   color: var(--text-secondary);
 }
 
+/* 약점 상세 보기 모달 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-content.weakness-detail {
+  background: var(--surface);
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.modal-header h2 {
+  font-size: 1.75rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s;
+}
+
+.close-button:hover {
+  background: var(--background);
+  color: var(--text-primary);
+}
+
+.weakness-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.weakness-section h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.weakness-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.weakness-item {
+  background: var(--background);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+}
+
+.weakness-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.weakness-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.weakness-score {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--danger);
+}
+
+.weakness-progress {
+  margin-bottom: 0.75rem;
+}
+
+.weakness-progress .progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.weakness-progress .progress-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.weakness-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.no-weakness-message {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-secondary);
+}
+
+.no-weakness-message svg {
+  color: var(--success);
+  margin-bottom: 1rem;
+}
+
+.no-weakness-message p {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+}
+
 @media (max-width: 768px) {
   .mypage-header h1 {
     font-size: 2rem;
@@ -154,5 +294,16 @@
 
   .features {
     grid-template-columns: 1fr;
+  }
+
+  .modal-content.weakness-detail {
+    padding: 1.5rem;
+    max-height: 95vh;
+  }
+
+  .weakness-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 }

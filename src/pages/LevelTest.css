@@ -99,9 +99,11 @@
   margin-bottom: 0.5rem;
   color: var(--text-primary);
   line-height: 1.6;
-  display: block;
-  visibility: visible;
-  opacity: 1;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  white-space: pre-line;
+  word-wrap: break-word;
 }
 
 .points {

@@ -293,6 +293,15 @@ export const translations = {
     retryTest: '다시 테스트하기',
     result: '결과',
     questionReview: '별 리뷰',
+    // MyPage weakness detail
+    clickToViewDetail: '클릭하여 상세 보기',
+    areaWeakness: '영역별 약점',
+    grammarWeakness: '문법 약점',
+    errorCount: '회 오류',
+    belowAverage: '평균 점수가 80점 미만입니다. 더 많은 연습이 필요합니다.',
+    frequentMistakes: '이 문법 항목에서 자주 실수하고 있습니다. 집중적으로 복습하세요.',
+    noWeaknessFound: '현재 발견된 약점이 없습니다. 계속 노력하세요!',
+    pointUnit: '점',
   },
   en: {
     home: 'Home',
@@ -586,6 +595,15 @@ export const translations = {
     retryTest: 'Retry Test',
     result: 'Result',
     questionReview: 'Review',
+    // MyPage weakness detail
+    clickToViewDetail: 'Click to view details',
+    areaWeakness: 'Area Weaknesses',
+    grammarWeakness: 'Grammar Weaknesses',
+    errorCount: 'errors',
+    belowAverage: 'Average score is below 80. More practice is needed.',
+    frequentMistakes: 'You frequently make mistakes in this grammar area. Please review intensively.',
+    noWeaknessFound: 'No weaknesses found. Keep up the good work!',
+    pointUnit: 'points',
   },
   ja: {
     home: 'ホーム',
@@ -879,6 +897,15 @@ export const translations = {
     retryTest: '再テスト',
     result: '結果',
     questionReview: 'レビュー',
+    // MyPage weakness detail
+    clickToViewDetail: 'クリックして詳細を見る',
+    areaWeakness: '領域別弱点',
+    grammarWeakness: '文法弱点',
+    errorCount: '回エラー',
+    belowAverage: '平均点が80点未満です。より多くの練習が必要です。',
+    frequentMistakes: 'この文法項目でよく間違えています。集中的に復習してください。',
+    noWeaknessFound: '現在発見された弱点がありません。引き続き頑張ってください！',
+    pointUnit: '点',
   },
   zh: {
     home: '首页',
@@ -1172,6 +1199,15 @@ export const translations = {
     retryTest: '重新测试',
     result: '结果',
     questionReview: '回顾',
+    // MyPage weakness detail
+    clickToViewDetail: '点击查看详情',
+    areaWeakness: '领域弱点',
+    grammarWeakness: '语法弱点',
+    errorCount: '次错误',
+    belowAverage: '平均分低于80分。需要更多练习。',
+    frequentMistakes: '您在这个语法项目中经常出错。请集中复习。',
+    noWeaknessFound: '目前未发现弱点。继续努力！',
+    pointUnit: '分',
   },
 };
 
