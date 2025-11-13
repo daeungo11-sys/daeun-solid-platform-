@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BarChart3, TrendingUp, BookOpen, AlertCircle, Bookmark, Target } from 'lucide-react'
+import { TrendingUp, BookOpen, AlertCircle, Bookmark, Target, FileText } from 'lucide-react'
 import './MyPage.css'
 
 interface WrongAnswer {
@@ -156,170 +156,113 @@ export default function MyPage() {
         <p>학습 통계와 분석 결과를 확인하세요</p>
       </div>
 
-      <div className="stats-section">
-        <h2>
-          <BarChart3 size={24} />
-          학습 통계
-        </h2>
-        <div className="stats-grid">
-          <div className="stat-card speaking">
-            <div className="icon-container speaking">
-              <Target size={40} />
-            </div>
-            <h3>말하기</h3>
-            <p>완료: {statistics.speaking.completed} / {statistics.speaking.total}</p>
-            <div className="feature-tags">
-              <span className="tag">평균 {statistics.speaking.averageScore}점</span>
-            </div>
+      <div className="features">
+        <div className="feature-card speaking">
+          <div className="icon-container speaking">
+            <Target size={40} />
           </div>
-
-          <div className="stat-card writing">
-            <div className="icon-container writing">
-              <BookOpen size={40} />
-            </div>
-            <h3>쓰기</h3>
-            <p>완료: {statistics.writing.completed} / {statistics.writing.total}</p>
-            <div className="feature-tags">
-              <span className="tag">평균 {statistics.writing.averageScore}점</span>
-            </div>
-          </div>
-
-          <div className="stat-card reading">
-            <div className="icon-container reading">
-              <TrendingUp size={40} />
-            </div>
-            <h3>읽기</h3>
-            <p>완료: {statistics.reading.completed} / {statistics.reading.total}</p>
-            <div className="feature-tags">
-              <span className="tag">평균 {statistics.reading.averageScore}점</span>
-            </div>
+          <h2>말하기 통계</h2>
+          <p>완료: {statistics.speaking.completed} / {statistics.speaking.total} | 평균 점수: {statistics.speaking.averageScore}점</p>
+          <div className="feature-tags">
+            <span className="tag"><Target size={14} /> {statistics.speaking.completed}개 완료</span>
+            <span className="tag"><TrendingUp size={14} /> 평균 {statistics.speaking.averageScore}점</span>
           </div>
         </div>
-      </div>
 
-      <div className="analysis-section">
-        <div className="weakness-analysis">
-          <h2>
-            <AlertCircle size={24} />
-            약점 자동 진단
-          </h2>
-          <div className="weakness-list">
+        <div className="feature-card writing">
+          <div className="icon-container writing">
+            <BookOpen size={40} />
+          </div>
+          <h2>쓰기 통계</h2>
+          <p>완료: {statistics.writing.completed} / {statistics.writing.total} | 평균 점수: {statistics.writing.averageScore}점</p>
+          <div className="feature-tags">
+            <span className="tag"><Target size={14} /> {statistics.writing.completed}개 완료</span>
+            <span className="tag"><TrendingUp size={14} /> 평균 {statistics.writing.averageScore}점</span>
+          </div>
+        </div>
+
+        <div className="feature-card reading">
+          <div className="icon-container reading">
+            <TrendingUp size={40} />
+          </div>
+          <h2>읽기 통계</h2>
+          <p>완료: {statistics.reading.completed} / {statistics.reading.total} | 평균 점수: {statistics.reading.averageScore}점</p>
+          <div className="feature-tags">
+            <span className="tag"><Target size={14} /> {statistics.reading.completed}개 완료</span>
+            <span className="tag"><TrendingUp size={14} /> 평균 {statistics.reading.averageScore}점</span>
+          </div>
+        </div>
+
+        <div className="feature-card weakness">
+          <div className="icon-container weakness">
+            <AlertCircle size={40} />
+          </div>
+          <h2>약점 자동 진단</h2>
+          <p>{weaknesses.length > 0 ? `${weaknesses.length}개의 약점이 발견되었습니다.` : '현재 약점이 없습니다. 계속 노력하세요!'}</p>
+          <div className="feature-tags">
             {weaknesses.length > 0 ? (
-              weaknesses.map((weakness, idx) => (
-                <span key={idx} className="weakness-tag">
-                  {weakness}
-                </span>
-              ))
+              <>
+                <span className="tag"><AlertCircle size={14} /> {weaknesses.length}개 발견</span>
+                <span className="tag"><Target size={14} /> 자동 분석</span>
+              </>
             ) : (
-              <p>현재 약점이 없습니다. 계속 노력하세요!</p>
+              <span className="tag"><TrendingUp size={14} /> 우수한 성적</span>
             )}
           </div>
         </div>
 
-        <div className="grammar-analysis">
-          <h2>
-            <BookOpen size={24} />
-            틀린/모르는 문법
-          </h2>
-          <div className="grammar-list">
+        <div className="feature-card grammar">
+          <div className="icon-container grammar">
+            <BookOpen size={40} />
+          </div>
+          <h2>틀린/모르는 문법</h2>
+          <p>{grammarAnalysis.length > 0 ? `${grammarAnalysis.length}개의 문법 항목이 분석되었습니다.` : '분석할 문법 오류가 없습니다.'}</p>
+          <div className="feature-tags">
             {grammarAnalysis.length > 0 ? (
-              grammarAnalysis.map((item, idx) => (
-                <div key={idx} className="grammar-item">
-                  <div className="grammar-header">
-                    <span className="grammar-name">{item.grammar}</span>
-                    <span className="grammar-count">{item.count}회</span>
-                  </div>
-                  <div className="grammar-bar">
-                    <div
-                      className="grammar-bar-fill"
-                      style={{ width: `${item.percentage}%` }}
-                    />
-                  </div>
-                  <div className="grammar-percentage">{item.percentage.toFixed(1)}%</div>
-                </div>
-              ))
+              <>
+                <span className="tag"><BookOpen size={14} /> {grammarAnalysis.length}개 항목</span>
+                <span className="tag"><Target size={14} /> 상세 분석</span>
+              </>
             ) : (
-              <p>분석할 문법 오류가 없습니다.</p>
+              <span className="tag"><TrendingUp size={14} /> 완벽합니다</span>
             )}
           </div>
         </div>
 
-        <div className="vocabulary-analysis">
-          <h2>
-            <Bookmark size={24} />
-            틀린/모르는 어휘 및 자주 쓰이는 단어
-          </h2>
-          <div className="vocabulary-list">
+        <div className="feature-card vocabulary">
+          <div className="icon-container vocabulary">
+            <Bookmark size={40} />
+          </div>
+          <h2>틀린/모르는 어휘</h2>
+          <p>{vocabularyAnalysis.length > 0 ? `${vocabularyAnalysis.length}개의 어휘가 분석되었습니다.` : '분석할 어휘가 없습니다.'}</p>
+          <div className="feature-tags">
             {vocabularyAnalysis.length > 0 ? (
-              vocabularyAnalysis.map((item, idx) => (
-                <div
-                  key={idx}
-                  className={`vocabulary-item ${item.difficulty}`}
-                >
-                  <span className="vocab-word">{item.word}</span>
-                  <span className="vocab-count">{item.count}회</span>
-                  <span className={`vocab-difficulty ${item.difficulty}`}>
-                    {item.difficulty === 'hard' ? '어려움' : item.difficulty === 'medium' ? '보통' : '쉬움'}
-                  </span>
-                </div>
-              ))
+              <>
+                <span className="tag"><Bookmark size={14} /> {vocabularyAnalysis.length}개 어휘</span>
+                <span className="tag"><Target size={14} /> 난이도 분석</span>
+              </>
             ) : (
-              <p>분석할 어휘가 없습니다.</p>
+              <span className="tag"><TrendingUp size={14} /> 완벽합니다</span>
             )}
           </div>
         </div>
-      </div>
 
-      <div className="wrong-answers-section">
-        <h2>
-          <BookOpen size={24} />
-          오답노트
-        </h2>
-        <div className="wrong-answers-list">
-          {wrongAnswers.length > 0 ? (
-            wrongAnswers.map((answer) => (
-              <div key={answer.id} className="wrong-answer-card">
-                <div className="wrong-answer-header">
-                  <span className="answer-type">{answer.type}</span>
-                  <span className="answer-date">{answer.date}</span>
-                </div>
-                <div className="wrong-answer-question">
-                  <strong>문제:</strong> {answer.question}
-                </div>
-                <div className="wrong-answer-comparison">
-                  <div className="wrong-answer-item">
-                    <span className="label wrong">내 답변</span>
-                    <span>{answer.myAnswer}</span>
-                  </div>
-                  <div className="wrong-answer-item">
-                    <span className="label correct">정답</span>
-                    <span>{answer.correctAnswer}</span>
-                  </div>
-                </div>
-                <div className="wrong-answer-explanation">
-                  <strong>해설:</strong> {answer.explanation}
-                </div>
-                {answer.grammar && answer.grammar.length > 0 && (
-                  <div className="wrong-answer-tags">
-                    <strong>관련 문법:</strong>
-                    {answer.grammar.map((g, idx) => (
-                      <span key={idx} className="tag">{g}</span>
-                    ))}
-                  </div>
-                )}
-                {answer.vocabulary && answer.vocabulary.length > 0 && (
-                  <div className="wrong-answer-tags">
-                    <strong>관련 어휘:</strong>
-                    {answer.vocabulary.map((v, idx) => (
-                      <span key={idx} className="tag">{v}</span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))
-          ) : (
-            <p>오답노트가 비어있습니다.</p>
-          )}
+        <div className="feature-card wrong-answers">
+          <div className="icon-container wrong-answers">
+            <FileText size={40} />
+          </div>
+          <h2>오답노트</h2>
+          <p>{wrongAnswers.length > 0 ? `${wrongAnswers.length}개의 오답이 기록되어 있습니다.` : '오답노트가 비어있습니다.'}</p>
+          <div className="feature-tags">
+            {wrongAnswers.length > 0 ? (
+              <>
+                <span className="tag"><FileText size={14} /> {wrongAnswers.length}개 기록</span>
+                <span className="tag"><Target size={14} /> 복습 필요</span>
+              </>
+            ) : (
+              <span className="tag"><TrendingUp size={14} /> 오답 없음</span>
+            )}
+          </div>
         </div>
       </div>
     </div>
