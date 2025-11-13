@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { TrendingUp, BookOpen, AlertCircle, Bookmark, Target, FileText } from 'lucide-react'
+import { useLanguage } from '../contexts/LanguageContext'
 import './MyPage.css'
 
 interface WrongAnswer {
@@ -89,6 +90,7 @@ const mockStatistics: Statistics = {
 }
 
 export default function MyPage() {
+  const { t } = useLanguage()
   const [wrongAnswers] = useState<WrongAnswer[]>(mockWrongAnswers)
   const [statistics] = useState<Statistics>(mockStatistics)
   const [grammarAnalysis, setGrammarAnalysis] = useState<GrammarAnalysis[]>([])
@@ -152,8 +154,8 @@ export default function MyPage() {
   return (
     <div className="mypage">
       <div className="mypage-header">
-        <h1>마이페이지</h1>
-        <p>학습 통계와 분석 결과를 확인하세요</p>
+        <h1>{t.mypagePageTitle}</h1>
+        <p>{t.mypagePageDesc}</p>
       </div>
 
       <div className="features">
@@ -161,11 +163,11 @@ export default function MyPage() {
           <div className="icon-container speaking">
             <Target size={40} />
           </div>
-          <h2>말하기 통계</h2>
-          <p>완료: {statistics.speaking.completed} / {statistics.speaking.total} | 평균 점수: {statistics.speaking.averageScore}점</p>
+          <h2>{t.speakingStats}</h2>
+          <p>{t.completed}: {statistics.speaking.completed} / {statistics.speaking.total} | {t.averageScore}: {statistics.speaking.averageScore}</p>
           <div className="feature-tags">
-            <span className="tag"><Target size={14} /> {statistics.speaking.completed}개 완료</span>
-            <span className="tag"><TrendingUp size={14} /> 평균 {statistics.speaking.averageScore}점</span>
+            <span className="tag"><Target size={14} /> {statistics.speaking.completed} {t.completed}</span>
+            <span className="tag"><TrendingUp size={14} /> {t.averageScore} {statistics.speaking.averageScore}</span>
           </div>
         </div>
 
@@ -173,11 +175,11 @@ export default function MyPage() {
           <div className="icon-container writing">
             <BookOpen size={40} />
           </div>
-          <h2>쓰기 통계</h2>
-          <p>완료: {statistics.writing.completed} / {statistics.writing.total} | 평균 점수: {statistics.writing.averageScore}점</p>
+          <h2>{t.writingStats}</h2>
+          <p>{t.completed}: {statistics.writing.completed} / {statistics.writing.total} | {t.averageScore}: {statistics.writing.averageScore}</p>
           <div className="feature-tags">
-            <span className="tag"><Target size={14} /> {statistics.writing.completed}개 완료</span>
-            <span className="tag"><TrendingUp size={14} /> 평균 {statistics.writing.averageScore}점</span>
+            <span className="tag"><Target size={14} /> {statistics.writing.completed} {t.completed}</span>
+            <span className="tag"><TrendingUp size={14} /> {t.averageScore} {statistics.writing.averageScore}</span>
           </div>
         </div>
 
@@ -185,11 +187,11 @@ export default function MyPage() {
           <div className="icon-container reading">
             <TrendingUp size={40} />
           </div>
-          <h2>읽기 통계</h2>
-          <p>완료: {statistics.reading.completed} / {statistics.reading.total} | 평균 점수: {statistics.reading.averageScore}점</p>
+          <h2>{t.readingStats}</h2>
+          <p>{t.completed}: {statistics.reading.completed} / {statistics.reading.total} | {t.averageScore}: {statistics.reading.averageScore}</p>
           <div className="feature-tags">
-            <span className="tag"><Target size={14} /> {statistics.reading.completed}개 완료</span>
-            <span className="tag"><TrendingUp size={14} /> 평균 {statistics.reading.averageScore}점</span>
+            <span className="tag"><Target size={14} /> {statistics.reading.completed} {t.completed}</span>
+            <span className="tag"><TrendingUp size={14} /> {t.averageScore} {statistics.reading.averageScore}</span>
           </div>
         </div>
 
@@ -197,16 +199,16 @@ export default function MyPage() {
           <div className="icon-container weakness">
             <AlertCircle size={40} />
           </div>
-          <h2>약점 자동 진단</h2>
-          <p>{weaknesses.length > 0 ? `${weaknesses.length}개의 약점이 발견되었습니다.` : '현재 약점이 없습니다. 계속 노력하세요!'}</p>
+          <h2>{t.weaknessDiagnosis}</h2>
+          <p>{weaknesses.length > 0 ? `${weaknesses.length}${t.weaknessFound}` : t.noWeakness}</p>
           <div className="feature-tags">
             {weaknesses.length > 0 ? (
               <>
-                <span className="tag"><AlertCircle size={14} /> {weaknesses.length}개 발견</span>
-                <span className="tag"><Target size={14} /> 자동 분석</span>
+                <span className="tag"><AlertCircle size={14} /> {weaknesses.length}{t.weaknessFoundLabel}</span>
+                <span className="tag"><Target size={14} /> {t.autoAnalysis}</span>
               </>
             ) : (
-              <span className="tag"><TrendingUp size={14} /> 우수한 성적</span>
+              <span className="tag"><TrendingUp size={14} /> {t.excellentScore}</span>
             )}
           </div>
         </div>
@@ -215,16 +217,16 @@ export default function MyPage() {
           <div className="icon-container grammar">
             <BookOpen size={40} />
           </div>
-          <h2>틀린/모르는 문법</h2>
-          <p>{grammarAnalysis.length > 0 ? `${grammarAnalysis.length}개의 문법 항목이 분석되었습니다.` : '분석할 문법 오류가 없습니다.'}</p>
+          <h2>{t.grammarAnalysis}</h2>
+          <p>{grammarAnalysis.length > 0 ? `${grammarAnalysis.length}${t.grammarItemsAnalyzed}` : t.noGrammarErrors}</p>
           <div className="feature-tags">
             {grammarAnalysis.length > 0 ? (
               <>
-                <span className="tag"><BookOpen size={14} /> {grammarAnalysis.length}개 항목</span>
-                <span className="tag"><Target size={14} /> 상세 분석</span>
+                <span className="tag"><BookOpen size={14} /> {grammarAnalysis.length}{t.grammarItems}</span>
+                <span className="tag"><Target size={14} /> {t.detailedAnalysis}</span>
               </>
             ) : (
-              <span className="tag"><TrendingUp size={14} /> 완벽합니다</span>
+              <span className="tag"><TrendingUp size={14} /> {t.perfect}</span>
             )}
           </div>
         </div>
@@ -233,16 +235,16 @@ export default function MyPage() {
           <div className="icon-container vocabulary">
             <Bookmark size={40} />
           </div>
-          <h2>틀린/모르는 어휘</h2>
-          <p>{vocabularyAnalysis.length > 0 ? `${vocabularyAnalysis.length}개의 어휘가 분석되었습니다.` : '분석할 어휘가 없습니다.'}</p>
+          <h2>{t.vocabularyAnalysis}</h2>
+          <p>{vocabularyAnalysis.length > 0 ? `${vocabularyAnalysis.length}${t.vocabularyAnalyzed}` : t.noVocabulary}</p>
           <div className="feature-tags">
             {vocabularyAnalysis.length > 0 ? (
               <>
-                <span className="tag"><Bookmark size={14} /> {vocabularyAnalysis.length}개 어휘</span>
-                <span className="tag"><Target size={14} /> 난이도 분석</span>
+                <span className="tag"><Bookmark size={14} /> {vocabularyAnalysis.length}{t.vocabularyItems}</span>
+                <span className="tag"><Target size={14} /> {t.difficultyAnalysis}</span>
               </>
             ) : (
-              <span className="tag"><TrendingUp size={14} /> 완벽합니다</span>
+              <span className="tag"><TrendingUp size={14} /> {t.perfect}</span>
             )}
           </div>
         </div>
@@ -251,16 +253,16 @@ export default function MyPage() {
           <div className="icon-container wrong-answers">
             <FileText size={40} />
           </div>
-          <h2>오답노트</h2>
-          <p>{wrongAnswers.length > 0 ? `${wrongAnswers.length}개의 오답이 기록되어 있습니다.` : '오답노트가 비어있습니다.'}</p>
+          <h2>{t.wrongAnswerNote}</h2>
+          <p>{wrongAnswers.length > 0 ? `${wrongAnswers.length}${t.wrongAnswersRecorded}` : t.noWrongAnswers}</p>
           <div className="feature-tags">
             {wrongAnswers.length > 0 ? (
               <>
-                <span className="tag"><FileText size={14} /> {wrongAnswers.length}개 기록</span>
-                <span className="tag"><Target size={14} /> 복습 필요</span>
+                <span className="tag"><FileText size={14} /> {wrongAnswers.length}{t.answersRecorded}</span>
+                <span className="tag"><Target size={14} /> {t.reviewNeeded}</span>
               </>
             ) : (
-              <span className="tag"><TrendingUp size={14} /> 오답 없음</span>
+              <span className="tag"><TrendingUp size={14} /> {t.noWrongAnswersLabel}</span>
             )}
           </div>
         </div>

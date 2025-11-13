@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { PenTool, Clock, RotateCcw } from 'lucide-react'
+import { useLanguage } from '../contexts/LanguageContext'
 import './Writing.css'
 
 interface Feedback {
@@ -10,6 +11,7 @@ interface Feedback {
 }
 
 export default function Writing() {
+  const { t } = useLanguage()
   const [timeLeft, setTimeLeft] = useState(600) // 10 minutes
   const [text, setText] = useState('')
   const [wordCount, setWordCount] = useState(0)
@@ -125,18 +127,18 @@ export default function Writing() {
   return (
     <div className="writing-page">
       <div className="page-header">
-        <h1>쓰기 연습</h1>
-        <p>짧은 주제에 대해 에세이를 작성하고 AI 피드백을 받아보세요</p>
+        <h1>{t.writingPageTitle}</h1>
+        <p>{t.writingPageDesc}</p>
       </div>
       
       <div className="encouragement-banner">
-        ✍️ 글을 쓰는 것은 생각을 정리하는 가장 좋은 방법입니다!
+        {t.encouragementWriting}
       </div>
 
       <div className="writing-container">
         <div className="topic-card">
           <div className="topic-header">
-            <h2>오늘의 주제</h2>
+            <h2>{t.todayTopic}</h2>
             <span className="date">{new Date().toLocaleDateString('ko-KR')}</span>
           </div>
           <p className="topic-text">{todayTopic}</p>
@@ -148,7 +150,7 @@ export default function Writing() {
             <span className="timer">{formatTime(timeLeft)}</span>
             {timeLeft < 30 && <span className="time-warning">시간이 부족합니다!</span>}
           </div>
-          <div className="word-count">단어 수: {wordCount}</div>
+          <div className="word-count">{t.wordCount}: {wordCount}</div>
         </div>
 
         <div className="writing-section">
@@ -156,9 +158,9 @@ export default function Writing() {
             <div className="start-prompt">
               <button className="start-button" onClick={startWriting}>
                 <PenTool size={24} />
-                <span>작성 시작</span>
+                <span>{t.startWriting}</span>
               </button>
-              <p className="prompt-text">10분 안에 주제에 대한 에세이를 작성하세요</p>
+              <p className="prompt-text">{t.writingPrompt}</p>
             </div>
           ) : (
             <div className="writing-editor">
@@ -166,12 +168,12 @@ export default function Writing() {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 className="writing-textarea"
-                placeholder="여기에 에세이를 작성하세요..."
+                placeholder={t.writingPlaceholder}
                 disabled={timeLeft === 0}
               />
               <div className="editor-footer">
                 <button className="btn-primary" onClick={handleSubmit} disabled={timeLeft === 0}>
-                  피드백 받기
+                  {t.getFeedback}
                 </button>
                 <button className="btn-secondary" onClick={resetWriting}>
                   <RotateCcw size={18} />
@@ -186,19 +188,19 @@ export default function Writing() {
           <div className="feedback-section">
             <h3>AI 튜터 피드백</h3>
             <div className="feedback-card grammar">
-              <h4>문법</h4>
+              <h4>{t.grammar}</h4>
               <p>{feedback.grammar}</p>
             </div>
             <div className="feedback-card vocabulary">
-              <h4>어휘</h4>
+              <h4>{t.vocabularyWord}</h4>
               <p>{feedback.vocabulary}</p>
             </div>
             <div className="feedback-card structure">
-              <h4>구조</h4>
+              <h4>{t.structure}</h4>
               <p>{feedback.structure}</p>
             </div>
             <div className="feedback-card overall">
-              <h4>종합 평가</h4>
+              <h4>{t.overallEvaluation}</h4>
               <p>{feedback.overall}</p>
             </div>
           </div>

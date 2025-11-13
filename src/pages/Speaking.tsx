@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Mic, Square, RotateCcw, Clock } from 'lucide-react'
+import { useLanguage } from '../contexts/LanguageContext'
 import './Speaking.css'
 
 interface Feedback {
@@ -9,6 +10,7 @@ interface Feedback {
 }
 
 export default function Speaking() {
+  const { t } = useLanguage()
   const [timeLeft, setTimeLeft] = useState(180) // 3 minutes in seconds
   const [isRecording, setIsRecording] = useState(false)
   const [recordingComplete, setRecordingComplete] = useState(false)
@@ -123,18 +125,18 @@ export default function Speaking() {
   return (
     <div className="speaking-page">
       <div className="page-header">
-        <h1>말하기 연습</h1>
-        <p>매일 새로운 질문에 답변해 영어 말하기 실력을 향상시켜보세요</p>
+        <h1>{t.speakingPageTitle}</h1>
+        <p>{t.speakingPageDesc}</p>
       </div>
       
       <div className="encouragement-banner">
-        💬 매일 영어로 말하는 연습을 하면 자신감이 쑥쑥 자라납니다!
+        {t.encouragementSpeaking}
       </div>
 
       <div className="speaking-container">
         <div className="question-card">
           <div className="question-header">
-            <h2>오늘의 질문</h2>
+            <h2>{t.todayQuestion}</h2>
             <span className="date">{new Date().toLocaleDateString('ko-KR')}</span>
           </div>
           <p className="question-text">{todayQuestion}</p>
@@ -156,19 +158,19 @@ export default function Speaking() {
                 {isRecording ? (
                   <>
                     <Square size={28} />
-                    <span>녹음 중지</span>
+                    <span>{t.stopRecording}</span>
                   </>
                 ) : (
                   <>
                     <Mic size={28} />
-                    <span>녹음 시작</span>
+                    <span>{t.startRecording}</span>
                   </>
                 )}
               </button>
               {isRecording && (
                 <div className="recording-indicator">
                   <span className="pulse"></span>
-                  <span>녹음 중...</span>
+                  <span>{t.recording}</span>
                 </div>
               )}
             </div>
@@ -181,11 +183,11 @@ export default function Speaking() {
               </div>
               <div className="action-buttons">
                 <button className="btn-primary" onClick={handleSubmit}>
-                  피드백 받기
+                  {t.getFeedback}
                 </button>
                 <button className="btn-secondary" onClick={resetRecording}>
                   <RotateCcw size={18} />
-                  다시 녹음
+                  {t.recordAgain}
                 </button>
               </div>
             </div>
@@ -196,15 +198,15 @@ export default function Speaking() {
           <div className="feedback-section">
             <h3>AI 튜터 피드백</h3>
             <div className="feedback-card pronunciation">
-              <h4>발음</h4>
+              <h4>{t.pronunciation}</h4>
               <p>{feedback.pronunciation}</p>
             </div>
             <div className="feedback-card grammar">
-              <h4>문법</h4>
+              <h4>{t.grammar}</h4>
               <p>{feedback.grammar}</p>
             </div>
             <div className="feedback-card overall">
-              <h4>종합 평가</h4>
+              <h4>{t.overallEvaluation}</h4>
               <p>{feedback.overall}</p>
             </div>
           </div>

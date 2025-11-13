@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { CheckCircle, XCircle, Clock, ArrowRight, ArrowLeft } from 'lucide-react'
+import { useLanguage } from '../contexts/LanguageContext'
 import './LevelTest.css'
 
 interface Question {
@@ -140,6 +141,7 @@ const mockQuestions: Question[] = [
 ]
 
 export default function LevelTest() {
+  const { t } = useLanguage()
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<number, string>>({})
   const [timeSpent, setTimeSpent] = useState(0)
@@ -270,10 +272,10 @@ export default function LevelTest() {
     return (
       <div className="level-test-page">
         <div className="test-result">
-          <h1>레벨 테스트 결과</h1>
+          <h1>{t.levelTestPageTitle} 결과</h1>
           <div className="result-summary">
             <div className="score-card">
-              <h2>종합 점수</h2>
+              <h2>{t.score}</h2>
               <div className="score-circle">
                 <span className="score">{results.totalScore}</span>
                 <span className="max-score">/ {results.maxScore}</span>
@@ -281,7 +283,7 @@ export default function LevelTest() {
               <div className="percentage">{results.percentage.toFixed(1)}%</div>
             </div>
             <div className="level-card">
-              <h2>당신의 레벨</h2>
+              <h2>{t.yourLevel}</h2>
               <div className="level-badge">{results.level}</div>
               <p>소요 시간: {formatTime(results.timeSpent)}</p>
             </div>
@@ -313,12 +315,12 @@ export default function LevelTest() {
           </div>
 
           <div className="question-review">
-            <h3>문제별 리뷰</h3>
+            <h3>{t.question}별 리뷰</h3>
             <div className="review-list">
               {results.questionResults.map((r: any, idx: number) => (
                 <div key={idx} className="review-item">
                   <div className="review-header">
-                    <span className="question-number">문제 {idx + 1}</span>
+                    <span className="question-number">{t.question} {idx + 1}</span>
                     {r.isCorrect ? (
                       <CheckCircle className="icon correct" size={20} />
                     ) : (
@@ -333,11 +335,11 @@ export default function LevelTest() {
                       </div>
                       {!r.isCorrect && r.question.type !== 'essay' && (
                         <div className="correct-answer">
-                          <strong>정답:</strong> {r.question.correctAnswer}
+                          <strong>{t.correctAnswers}:</strong> {r.question.correctAnswer}
                         </div>
                       )}
                     </div>
-                    <div className="score-info">점수: {r.score} / {r.question.points}</div>
+                    <div className="score-info">{t.score}: {r.score} / {r.question.points}</div>
                   </div>
                 </div>
               ))}
@@ -358,10 +360,10 @@ export default function LevelTest() {
   return (
     <div className="level-test-page">
       <div className="test-header">
-        <h1>레벨 테스트</h1>
+        <h1>{t.levelTestPageTitle}</h1>
         <div className="test-info">
           <span className="question-counter">
-            문제 {currentQuestion + 1} / {mockQuestions.length}
+            {t.question} {currentQuestion + 1} {t.of} {mockQuestions.length}
           </span>
           <span className="timer">
             <Clock size={16} />
@@ -431,13 +433,13 @@ export default function LevelTest() {
             disabled={currentQuestion === 0}
           >
             <ArrowLeft size={20} />
-            이전
+            {t.previous}
           </button>
           <button
             className="nav-button next"
             onClick={handleNext}
           >
-            {currentQuestion === mockQuestions.length - 1 ? '제출하기' : '다음'}
+            {currentQuestion === mockQuestions.length - 1 ? t.submitAnswer : t.next}
             {currentQuestion < mockQuestions.length - 1 && <ArrowRight size={20} />}
           </button>
         </div>

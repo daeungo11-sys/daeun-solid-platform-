@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Clock, CheckCircle, XCircle } from 'lucide-react'
+import { useLanguage } from '../contexts/LanguageContext'
 import './Reading.css'
 
 interface Question {
@@ -17,6 +18,7 @@ interface Answer {
 }
 
 export default function Reading() {
+  const { t } = useLanguage()
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [timeLeft, setTimeLeft] = useState(120) // 2 minutes per question
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
@@ -162,7 +164,7 @@ export default function Reading() {
 
   const showResults = () => {
     // This would typically show a results summary
-    alert('모든 문제를 완료했습니다!')
+    alert(t.allQuestionsCompleted)
   }
 
   const formatTime = (seconds: number) => {
@@ -174,12 +176,12 @@ export default function Reading() {
   return (
     <div className="reading-page">
       <div className="page-header">
-        <h1>읽기 연습</h1>
-        <p>토익, 토플, 수능 지문으로 독해 실력을 향상시켜보세요</p>
+        <h1>{t.readingPageTitle}</h1>
+        <p>{t.readingPageDesc}</p>
       </div>
       
       <div className="encouragement-banner">
-        📚 꾸준히 읽으면 어휘력과 이해력이 자연스럽게 향상됩니다!
+        {t.encouragementReading}
       </div>
 
       <div className="exam-selector">
@@ -227,7 +229,7 @@ export default function Reading() {
         <div className="question-section">
           <div className="question-header">
             <span className="question-number">
-              문제 {currentQuestion + 1} / {questions.length}
+              {t.questionNumber} {currentQuestion + 1} / {questions.length}
             </span>
             <div className="timer-display">
               <Clock size={20} />
@@ -277,17 +279,17 @@ export default function Reading() {
                   {answers[answers.length - 1]?.isCorrect ? (
                     <>
                       <CheckCircle size={24} />
-                      <h4>정답입니다!</h4>
+                      <h4>{t.correctAnswer}</h4>
                     </>
                   ) : (
                     <>
                       <XCircle size={24} />
-                      <h4>오답입니다</h4>
+                      <h4>{t.wrongAnswer}</h4>
                     </>
                   )}
                 </div>
                 <div className="explanation-content">
-                  <h5>해설</h5>
+                  <h5>{t.explanationText}</h5>
                   <p>{currentQ.explanation}</p>
                   {!answers[answers.length - 1]?.isCorrect && (
                     <div className="correct-answer-hint">
@@ -296,7 +298,7 @@ export default function Reading() {
                   )}
                 </div>
                 <button className="next-button" onClick={handleNext}>
-                  {currentQuestion < questions.length - 1 ? '다음 문제' : '결과 보기'}
+                  {currentQuestion < questions.length - 1 ? t.nextQuestion : t.viewResults}
                 </button>
               </div>
             )}

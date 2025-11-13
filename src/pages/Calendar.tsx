@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { Calendar as CalendarIcon, Flag, Edit2, Trash2 } from 'lucide-react'
+import { useLanguage } from '../contexts/LanguageContext'
 import './Calendar.css'
 
 interface DiaryEntry {
@@ -11,6 +12,7 @@ interface DiaryEntry {
 }
 
 export default function Calendar() {
+  const { t } = useLanguage()
   const [entries, setEntries] = useState<DiaryEntry[]>([
     {
       id: '1',
@@ -146,13 +148,13 @@ export default function Calendar() {
 
   return (
     <div className="calendar-page">
-                    <div className="page-header">
-          <h1>학습 기록</h1>
-          <p>매일의 학습 경험을 기록하고 어려운 부분을 추적해보세요</p>
-        </div>
+      <div className="page-header">
+        <h1>{t.calendarPageTitle}</h1>
+        <p>{t.calendarPageDesc}</p>
+      </div>
       
       <div className="calendar-encouragement-banner">
-        📅 매일의 작은 기록이 큰 성장을 만들어냅니다!
+        {t.calendarEncouragement}
       </div>
 
       <div className="calendar-container">
@@ -202,12 +204,12 @@ export default function Calendar() {
         </div>
 
         <div className="entries-section">
-          <h2>기록 목록</h2>
+          <h2>{t.recordList}</h2>
           {entries.length === 0 ? (
             <div className="empty-state">
               <CalendarIcon size={48} />
-              <p>아직 기록이 없습니다</p>
-              <p className="hint">달력의 날짜를 클릭하여 학습 기록을 추가하세요</p>
+              <p>{t.noRecords}</p>
+              <p className="hint">{t.clickDateToAdd}</p>
             </div>
           ) : (
             <div className="entries-list">
@@ -244,7 +246,7 @@ export default function Calendar() {
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3>학습 기록 {selectedEntry ? '수정' : '추가'}</h3>
+            <h3>{t.learningRecord} {selectedEntry ? t.editRecord : t.addRecord}</h3>
             
             <div className="form-group">
               <label>날짜</label>
@@ -252,7 +254,7 @@ export default function Calendar() {
             </div>
 
             <div className="form-group">
-              <label>영역</label>
+              <label>{t.area}</label>
               <div className="radio-group">
                 <label>
                   <input 
@@ -285,7 +287,7 @@ export default function Calendar() {
             </div>
 
             <div className="form-group">
-              <label>난이도</label>
+              <label>{t.difficulty}</label>
               <select 
                 value={formData.difficulty} 
                 onChange={(e) => setFormData({...formData, difficulty: e.target.value})}
@@ -297,7 +299,7 @@ export default function Calendar() {
             </div>
 
             <div className="form-group">
-              <label>메모</label>
+              <label>{t.memo}</label>
               <textarea 
                 value={formData.notes} 
                 onChange={(e) => setFormData({...formData, notes: e.target.value})}
@@ -308,10 +310,10 @@ export default function Calendar() {
 
             <div className="modal-actions">
               <button className="btn-cancel" onClick={() => setShowModal(false)}>
-                취소
+                {t.cancel}
               </button>
               <button className="btn-save" onClick={handleSaveEntry}>
-                저장
+                {t.save}
               </button>
             </div>
           </div>
