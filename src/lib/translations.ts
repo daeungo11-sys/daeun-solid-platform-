@@ -50,6 +50,10 @@ export const translations = {
     // AI Coach page
     aiCoachGreeting: '안녕하세요! 저는 당신의 AI 영어 학습 코치예요. 😊\n\n영어 학습에 관한 어떤 질문이든 편하게 물어보세요!\n\n예시:\n• "이 표현 언제 써요?"\n• "비슷한 단어 차이점은?"\n• "이 문법 어떻게 쓰나요?"\n• "영어 말하기 실력 향상 방법은?"',
     quickQuestions: '💡 빠른 질문:',
+    quickQuestion1: '영어 말하기 실력을 빠르게 향상시키는 방법은?',
+    quickQuestion2: "'have to'와 'must'의 차이점은?",
+    quickQuestion3: '관사 (a/an/the) 사용법을 쉽게 알려주세요',
+    quickQuestion4: '효과적인 단어 암기 방법은?',
     aiCoachGuideTitle: '📚 AI 코치 활용법',
     aiCoachGuideGrammar: '✓ 문법 질문: "현재완료와 과거시제 차이는?"',
     aiCoachGuideVocabulary: '✓ 어휘 뉘앙스: "\'see\', \'look\', \'watch\' 차이점은?"',
@@ -249,6 +253,10 @@ export const translations = {
     // AI Coach page
     aiCoachGreeting: 'Hello! I\'m your AI English learning coach. 😊\n\nFeel free to ask me anything about English learning!\n\nExamples:\n• "When do I use this expression?"\n• "What\'s the difference between similar words?"\n• "How do I use this grammar?"\n• "How can I improve my English speaking?"',
     quickQuestions: '💡 Quick Questions:',
+    quickQuestion1: 'How can I quickly improve my English speaking skills?',
+    quickQuestion2: 'What\'s the difference between "have to" and "must"?',
+    quickQuestion3: 'Can you explain how to use articles (a/an/the) easily?',
+    quickQuestion4: 'What are effective methods for memorizing vocabulary?',
     aiCoachGuideTitle: '📚 How to Use AI Coach',
     aiCoachGuideGrammar: '✓ Grammar Questions: "What\'s the difference between present perfect and past tense?"',
     aiCoachGuideVocabulary: '✓ Vocabulary Nuances: "What\'s the difference between \'see\', \'look\', and \'watch\'?"',
@@ -448,6 +456,10 @@ export const translations = {
     // AI Coach page
     aiCoachGreeting: 'こんにちは！私はあなたのAI英語学習コーチです。😊\n\n英語学習について何でも気軽に聞いてください！\n\n例:\n• "この表現はいつ使いますか？"\n• "似た単語の違いは？"\n• "この文法はどう使いますか？"\n• "英語スピーキング力向上方法は？"',
     quickQuestions: '💡 クイック質問:',
+    quickQuestion1: '英語スピーキング力を素早く向上させる方法は？',
+    quickQuestion2: '\'have to\'と\'must\'の違いは？',
+    quickQuestion3: '冠詞（a/an/the）の使い方を簡単に教えてください',
+    quickQuestion4: '効果的な単語暗記方法は？',
     aiCoachGuideTitle: '📚 AIコーチ活用方法',
     aiCoachGuideGrammar: '✓ 文法質問: "現在完了と過去時制の違いは？"',
     aiCoachGuideVocabulary: '✓ 語彙のニュアンス: "\'see\', \'look\', \'watch\'の違いは？"',
@@ -647,6 +659,10 @@ export const translations = {
     // AI Coach page
     aiCoachGreeting: '您好！我是您的AI英语学习教练。😊\n\n请随时问我任何关于英语学习的问题！\n\n示例:\n• "这个表达什么时候用？"\n• "相似单词的区别是什么？"\n• "这个语法怎么用？"\n• "如何提高英语口语？"',
     quickQuestions: '💡 快速问题:',
+    quickQuestion1: '如何快速提高英语口语？',
+    quickQuestion2: '\'have to\'和\'must\'的区别是什么？',
+    quickQuestion3: '请简单解释一下冠词（a/an/the）的用法',
+    quickQuestion4: '有效的单词记忆方法有哪些？',
     aiCoachGuideTitle: '📚 AI教练使用方法',
     aiCoachGuideGrammar: '✓ 语法问题: "现在完成时和过去时的区别是什么？"',
     aiCoachGuideVocabulary: '✓ 词汇细微差别: "\'see\', \'look\', \'watch\'的区别是什么？"',

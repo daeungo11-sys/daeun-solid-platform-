@@ -97,12 +97,12 @@ export default function AICoach() {
     }
   };
 
-  // 빠른 질문은 언어별로 다르게 제공할 수 있지만, 현재는 기본 질문 사용
+  // 언어별 빠른 질문
   const quickQuestions = [
-    '영어 말하기 실력을 빠르게 향상시키는 방법은?',
-    "'have to'와 'must'의 차이점은?",
-    '관사 (a/an/the) 사용법을 쉽게 알려주세요',
-    '효과적인 단어 암기 방법은?',
+    t.quickQuestion1,
+    t.quickQuestion2,
+    t.quickQuestion3,
+    t.quickQuestion4,
   ];
 
   const handleQuickQuestion = (question: string) => {
