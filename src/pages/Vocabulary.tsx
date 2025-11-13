@@ -75,7 +75,7 @@ export default function Vocabulary() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('이 단어를 삭제하시겠습니까?')) {
+    if (confirm(t.deleteWordConfirm)) {
       deleteVocabulary(id);
       loadVocabulary();
     }
@@ -84,7 +84,7 @@ export default function Vocabulary() {
   const startMyWordsTest = () => {
     const wordsToTest = reviewList.length > 0 ? reviewList : vocabulary.filter((v) => !v.mastered);
     if (wordsToTest.length === 0) {
-      alert('테스트할 단어가 없어요! 단어를 먼저 추가해주세요.');
+      alert(t.noWordsForTest);
       return;
     }
 
@@ -101,13 +101,13 @@ export default function Vocabulary() {
 
   const startRecommendedTest = () => {
     if (userLevel === 'Not Set') {
-      alert('먼저 레벨 테스트를 완료해주세요!');
+      alert(t.completeLevelTestFirst);
       return;
     }
 
     const recommendedWords = getRandomWordsByLevel(userLevel, 10);
     if (recommendedWords.length === 0) {
-      alert('권장 단어가 없어요!');
+      alert(t.noRecommendedWords);
       return;
     }
 
@@ -170,7 +170,7 @@ export default function Vocabulary() {
         words: [],
       });
 
-      alert(`테스트 완료!\n\n정답: ${finalScore}/${testScore.total}\n정답률: ${Math.round((finalScore / testScore.total) * 100)}%`);
+      alert(`${t.testResult}\n\n${t.correctCount}: ${finalScore}/${testScore.total}\n${t.correctRate}: ${Math.round((finalScore / testScore.total) * 100)}%`);
       setTestMode(false);
       setTestType(null);
       loadVocabulary();
@@ -185,9 +185,9 @@ export default function Vocabulary() {
       <div className="vocabulary-page">
         <div className="test-container">
           <div className="test-header">
-            <h2>단어 테스트</h2>
+            <h2>{t.wordTest}</h2>
             <button onClick={() => setTestMode(false)} className="btn-secondary">
-              종료
+              {t.exit}
             </button>
           </div>
 
@@ -197,19 +197,19 @@ export default function Vocabulary() {
             </div>
             <div className="progress-info">
               <span>{currentTestIndex + 1} / {testWords.length}</span>
-              <span>정답: {testScore.correct}</span>
+              <span>{t.correct}: {testScore.correct}</span>
             </div>
           </div>
 
           <div className="test-card">
             <div className="word-display">
               <h1>{currentWord.word}</h1>
-              {currentWord.example && <p className="example">예문: "{currentWord.example}"</p>}
+              {currentWord.example && <p className="example">{t.exampleSentence}: "{currentWord.example}"</p>}
             </div>
 
             {!answerSubmitted ? (
               <div className="answer-input">
-                <label>이 단어의 뜻을 입력하세요</label>
+                <label>{t.enterWordMeaning}</label>
                 <input
                   type="text"
                   value={userAnswer}
@@ -219,11 +219,11 @@ export default function Vocabulary() {
                       handleSubmitAnswer();
                     }
                   }}
-                  placeholder="예: 행복한"
+                  placeholder={`${t.exampleColon} 행복한`}
                   autoFocus
                 />
                 <button onClick={handleSubmitAnswer} disabled={!userAnswer.trim()} className="btn-primary">
-                  제출하기
+                  {t.submit}
                 </button>
               </div>
             ) : (
@@ -231,15 +231,15 @@ export default function Vocabulary() {
                 <div className={`result-box ${isAnswerCorrect ? 'correct' : 'incorrect'}`}>
                   <div className="result-icon">{isAnswerCorrect ? '🎉' : '😅'}</div>
                   <div className="result-text">
-                    {isAnswerCorrect ? '정답입니다!' : '아쉬워요!'}
+                    {isAnswerCorrect ? t.correctAnswerVocab : t.incorrectAnswer}
                   </div>
-                  <div className="user-answer">입력한 답: {userAnswer}</div>
+                  <div className="user-answer">{t.yourAnswer}: {userAnswer}</div>
                   {!isAnswerCorrect && (
-                    <div className="correct-answer">정답: {currentWord.meaning}</div>
+                    <div className="correct-answer">{t.correctAnswerLabel}: {currentWord.meaning}</div>
                   )}
                 </div>
                 <button onClick={handleNextQuestion} className="btn-primary">
-                  {currentTestIndex < testWords.length - 1 ? '다음 단어 →' : '테스트 완료'}
+                  {currentTestIndex < testWords.length - 1 ? t.nextWord : t.testCompleteVocab}
                 </button>
               </div>
             )}
@@ -265,10 +265,10 @@ export default function Vocabulary() {
           </div>
           <div className="header-actions">
             <button onClick={startRecommendedTest} className="btn-primary">
-              레벨별 단어 테스트
+              {t.levelWordTest}
             </button>
             <button onClick={startMyWordsTest} className="btn-primary">
-              내 단어 테스트
+              {t.myWordTest}
             </button>
             <button onClick={() => setShowAddForm(!showAddForm)} className="btn-secondary">
               + {t.addWord}
@@ -278,57 +278,57 @@ export default function Vocabulary() {
 
         <div className="stats-grid">
           <div className="stat-card">
-            <div className="stat-label">총 단어</div>
+            <div className="stat-label">{t.totalWords}</div>
             <div className="stat-value">{stats.total}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-label">암기 완료</div>
+            <div className="stat-label">{t.masteredWords}</div>
             <div className="stat-value">{stats.mastered}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-label">복습 필요</div>
+            <div className="stat-label">{t.needReview}</div>
             <div className="stat-value">{stats.needReview}</div>
           </div>
         </div>
 
         {showAddForm && (
           <form onSubmit={handleAddWord} className="add-word-form">
-            <h3>새 단어 추가</h3>
+            <h3>{t.newWordAdd}</h3>
             <div className="form-row">
               <div className="form-group">
-                <label>{t.word} (필수)</label>
+                <label>{t.word} {t.required}</label>
                 <input
                   type="text"
                   value={newWord.word}
                   onChange={(e) => setNewWord({ ...newWord, word: e.target.value })}
-                  placeholder="예: ubiquitous"
+                  placeholder={`${t.exampleColon} ubiquitous`}
                   required
                 />
               </div>
               <div className="form-group">
-                <label>{t.meaning} (필수)</label>
+                <label>{t.meaning} {t.required}</label>
                 <input
                   type="text"
                   value={newWord.meaning}
                   onChange={(e) => setNewWord({ ...newWord, meaning: e.target.value })}
-                  placeholder="예: 어디에나 있는"
+                  placeholder={`${t.exampleColon} 어디에나 있는`}
                   required
                 />
               </div>
             </div>
             <div className="form-group">
-              <label>{t.example} (선택)</label>
+              <label>{t.example} {t.optional}</label>
               <input
                 type="text"
                 value={newWord.example}
                 onChange={(e) => setNewWord({ ...newWord, example: e.target.value })}
-                placeholder="예: Smartphones are ubiquitous."
+                placeholder={`${t.exampleColon} Smartphones are ubiquitous.`}
               />
             </div>
             <div className="form-actions">
-              <button type="submit" className="btn-primary">추가</button>
+              <button type="submit" className="btn-primary">{t.add}</button>
               <button type="button" onClick={() => setShowAddForm(false)} className="btn-secondary">
-                취소
+                {t.cancelVocab}
               </button>
             </div>
           </form>
@@ -339,13 +339,13 @@ export default function Vocabulary() {
             onClick={() => setActiveTab('all')}
             className={`tab ${activeTab === 'all' ? 'active' : ''}`}
           >
-            전체 단어 ({vocabulary.length})
+            {t.allWords} ({vocabulary.length})
           </button>
           <button
             onClick={() => setActiveTab('review')}
             className={`tab ${activeTab === 'review' ? 'active' : ''}`}
           >
-            복습할 단어 ({reviewList.length})
+            {t.wordsToReview} ({reviewList.length})
           </button>
         </div>
 
@@ -355,7 +355,7 @@ export default function Vocabulary() {
               <div className="word-content">
                 <div className="word-header">
                   <h3>{item.word}</h3>
-                  {item.mastered && <span className="mastered-badge">✓ 암기 완료</span>}
+                  {item.mastered && <span className="mastered-badge">{t.masteredBadge}</span>}
                 </div>
                 <p className="meaning">{item.meaning}</p>
                 {item.example && <p className="example">"{item.example}"</p>}
@@ -363,20 +363,20 @@ export default function Vocabulary() {
               <div className="word-actions">
                 {!item.mastered && (
                   <button onClick={() => handleReview(item.id)} className="btn-success">
-                    ✓ 복습 완료
+                    {t.reviewComplete}
                   </button>
                 )}
                 <button onClick={() => handleDelete(item.id)} className="btn-danger">
-                  🗑️ 삭제
+                  {t.deleteWord}
                 </button>
               </div>
             </div>
           ))}
           {(activeTab === 'all' ? vocabulary : reviewList).length === 0 && (
             <div className="empty-state">
-              <p>등록된 단어가 없습니다.</p>
+              <p>{t.noWordsRegistered}</p>
               <button onClick={() => setShowAddForm(true)} className="btn-primary">
-                첫 번째 단어 추가하기
+                {t.addFirstWord}
               </button>
             </div>
           )}

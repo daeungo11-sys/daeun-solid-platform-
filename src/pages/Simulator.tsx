@@ -13,19 +13,20 @@ interface Message {
   };
 }
 
-const scenarios = [
-  { value: '카페', label: '☕ 카페', description: '주문, 메뉴 추천, 결제' },
-  { value: '레스토랑', label: '🍽️ 레스토랑', description: '예약, 주문, 계산' },
-  { value: '쇼핑몰', label: '🛍️ 쇼핑몰', description: '상품 문의, 시착, 환불' },
-  { value: '병원', label: '🏥 병원', description: '예약, 증상 설명, 처방' },
-  { value: '공항', label: '✈️ 공항', description: '체크인, 수하물, 탑승구' },
-  { value: '호텔', label: '🏨 호텔', description: '체크인, 룸서비스, 문의' },
-  { value: '면접', label: '💼 면접', description: '자기소개, 질문 답변' },
-  { value: '회의', label: '📊 회의', description: '발표, 토론, 의견 제시' },
-];
-
 export default function Simulator() {
   const { t } = useLanguage();
+  
+  const scenarios = [
+    { value: '카페', label: t.scenarioCafe, description: t.scenarioCafeDesc },
+    { value: '레스토랑', label: t.scenarioRestaurant, description: t.scenarioRestaurantDesc },
+    { value: '쇼핑몰', label: t.scenarioShopping, description: t.scenarioShoppingDesc },
+    { value: '병원', label: t.scenarioHospital, description: t.scenarioHospitalDesc },
+    { value: '공항', label: t.scenarioAirport, description: t.scenarioAirportDesc },
+    { value: '호텔', label: t.scenarioHotel, description: t.scenarioHotelDesc },
+    { value: '면접', label: t.scenarioInterview, description: t.scenarioInterviewDesc },
+    { value: '회의', label: t.scenarioMeeting, description: t.scenarioMeetingDesc },
+  ];
+
   const [selectedScenario, setSelectedScenario] = useState('카페');
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
@@ -322,8 +323,8 @@ export default function Simulator() {
             <div className="messages-container" ref={messagesEndRef}>
               {messages.length === 0 && (
                 <div className="welcome-message">
-                  <p>음성 대화를 시작해보세요!</p>
-                  <p className="hint">마이크 버튼을 눌러 영어로 말해보세요.</p>
+                  <p>{t.startVoiceConversation}</p>
+                  <p className="hint">{t.micButtonHint}</p>
                 </div>
               )}
               {messages.map((message, index) => (
@@ -361,22 +362,22 @@ export default function Simulator() {
                 onClick={startListening}
                 disabled={loading || isSpeaking}
                 className={`mic-button ${isListening ? 'listening' : ''}`}
-                title={isListening ? '녹음 중지' : '녹음 시작'}
+                title={isListening ? t.recordingStop : t.recordingStart}
               >
                 {isListening ? <Square size={24} /> : <Mic size={24} />}
-                <span>{isListening ? '녹음 중...' : '말하기'}</span>
+                <span>{isListening ? t.recordingInProgress : t.speak}</span>
               </button>
               <button
                 onClick={() => setSpeechEnabled(!speechEnabled)}
                 className={`speech-toggle ${speechEnabled ? 'enabled' : 'disabled'}`}
-                title={speechEnabled ? '음성 재생 끄기' : '음성 재생 켜기'}
+                title={speechEnabled ? t.speechPlayOff : t.speechPlayOn}
               >
                 {speechEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
               </button>
               {isSpeaking && (
                 <div className="speaking-indicator">
                   <span className="pulse"></span>
-                  <span>AI가 말하는 중...</span>
+                  <span>{t.aiSpeaking}</span>
                 </div>
               )}
             </div>

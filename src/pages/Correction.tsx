@@ -127,9 +127,9 @@ export default function Correction() {
 
         <div className="feedback-section">
           <div className="feedback-header">
-            <h3>📊 개인 피드백</h3>
+            <h3>📊 {t.personalFeedback}</h3>
             <button onClick={handleShowFeedback} className="btn-secondary">
-              피드백 보기
+              {t.showFeedback}
             </button>
           </div>
           {feedback && (

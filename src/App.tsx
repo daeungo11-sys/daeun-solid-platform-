@@ -42,15 +42,15 @@ function Navbar() {
           </NavLink>
           <NavLink to="/speaking" className={({ isActive }) => isActive ? 'active' : ''}>
             <Mic size={20} />
-            <span>말하기</span>
+            <span>{t.speaking}</span>
           </NavLink>
           <NavLink to="/writing" className={({ isActive }) => isActive ? 'active' : ''}>
             <PenTool size={20} />
-            <span>쓰기</span>
+            <span>{t.writing}</span>
           </NavLink>
           <NavLink to="/reading" className={({ isActive }) => isActive ? 'active' : ''}>
             <BookOpen size={20} />
-            <span>읽기</span>
+            <span>{t.reading}</span>
           </NavLink>
           <NavLink to="/simulator" className={({ isActive }) => isActive ? 'active' : ''}>
             <MessageSquare size={20} />
@@ -66,7 +66,7 @@ function Navbar() {
           </NavLink>
           <NavLink to="/calendar" className={({ isActive }) => isActive ? 'active' : ''}>
             <CalendarIcon size={20} />
-            <span>학습 기록</span>
+            <span>{t.learningRecord}</span>
           </NavLink>
           <NavLink to="/mypage" className={({ isActive }) => isActive ? 'active' : ''}>
             <User size={20} />

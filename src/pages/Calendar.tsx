@@ -152,7 +152,7 @@ export default function Calendar() {
       <div className="calendar-container">
         <div className="calendar-section">
           <div className="calendar-header">
-            <h2>{currentYear}년 {currentMonth}</h2>
+            <h2>{currentYear}{t.year} {currentMonth}</h2>
           </div>
 
           <div className="calendar-grid">
