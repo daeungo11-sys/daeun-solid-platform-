@@ -265,14 +265,14 @@ export default function LevelTest() {
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
     const secs = seconds % 60
-    return `${mins}분 ${secs}초`
+    return `${mins}${t.minutes} ${secs}${t.seconds}`
   }
 
   if (isFinished && results) {
     return (
       <div className="level-test-page">
         <div className="test-result">
-          <h1>{t.levelTestPageTitle} 결과</h1>
+          <h1>{t.levelTestPageTitle} {t.result}</h1>
           <div className="result-summary">
             <div className="score-card">
               <h2>{t.score}</h2>
@@ -285,37 +285,37 @@ export default function LevelTest() {
             <div className="level-card">
               <h2>{t.yourLevel}</h2>
               <div className="level-badge">{results.level}</div>
-              <p>소요 시간: {formatTime(results.timeSpent)}</p>
+              <p>{t.timeSpent}: {formatTime(results.timeSpent)}</p>
             </div>
           </div>
 
           <div className="analysis-section">
             <div className="strengths">
-              <h3>강점</h3>
+              <h3>{t.strengths}</h3>
               <div className="tag-list">
                 {results.strengths.map((s: string, idx: number) => (
                   <span key={idx} className="tag strength">
-                    {s === 'multiple' ? '객관식' : s === 'essay' ? '서술형' : s === 'reading' ? '독해' : '번역'}
+                    {s === 'multiple' ? t.multipleChoice : s === 'essay' ? t.essay : s === 'reading' ? t.readingComprehension : t.translation}
                   </span>
                 ))}
-                {results.strengths.length === 0 && <span className="tag">분석 중...</span>}
+                {results.strengths.length === 0 && <span className="tag">{t.analyzing}</span>}
               </div>
             </div>
             <div className="weaknesses">
-              <h3>약점</h3>
+              <h3>{t.weaknesses}</h3>
               <div className="tag-list">
                 {results.weaknesses.map((w: string, idx: number) => (
                   <span key={idx} className="tag weakness">
-                    {w === 'multiple' ? '객관식' : w === 'essay' ? '서술형' : w === 'reading' ? '독해' : '번역'}
+                    {w === 'multiple' ? t.multipleChoice : w === 'essay' ? t.essay : w === 'reading' ? t.readingComprehension : t.translation}
                   </span>
                 ))}
-                {results.weaknesses.length === 0 && <span className="tag">분석 중...</span>}
+                {results.weaknesses.length === 0 && <span className="tag">{t.analyzing}</span>}
               </div>
             </div>
           </div>
 
           <div className="question-review">
-            <h3>{t.question}별 리뷰</h3>
+            <h3>{t.question}{t.questionReview}</h3>
             <div className="review-list">
               {results.questionResults.map((r: any, idx: number) => (
                 <div key={idx} className="review-item">
@@ -331,7 +331,7 @@ export default function LevelTest() {
                     <p className="question-text">{r.question.question}</p>
                     <div className="answer-comparison">
                       <div className="user-answer">
-                        <strong>내 답변:</strong> {r.userAnswer || '(답변 없음)'}
+                        <strong>{t.myAnswer}</strong> {r.userAnswer || t.noAnswer}
                       </div>
                       {!r.isCorrect && r.question.type !== 'essay' && (
                         <div className="correct-answer">
@@ -347,7 +347,7 @@ export default function LevelTest() {
           </div>
 
           <button className="retry-button" onClick={() => window.location.reload()}>
-            다시 테스트하기
+            {t.retryTest}
           </button>
         </div>
       </div>
@@ -381,22 +381,22 @@ export default function LevelTest() {
 
       <div className="question-container">
         <div className="question-type">
-          {currentQ.type === 'multiple' && '객관식'}
-          {currentQ.type === 'essay' && '서술형'}
-          {currentQ.type === 'reading' && '독해'}
-          {currentQ.type === 'translation' && '번역'}
+          {currentQ.type === 'multiple' && t.multipleChoice}
+          {currentQ.type === 'essay' && t.essay}
+          {currentQ.type === 'reading' && t.readingComprehension}
+          {currentQ.type === 'translation' && t.translation}
         </div>
 
         {currentQ.passage && (
           <div className="passage">
-            <h3>지문</h3>
+            <h3>{t.passage}</h3>
             <p>{currentQ.passage}</p>
           </div>
         )}
 
         <div className="question">
           <h2>{currentQ.question}</h2>
-          <div className="points">배점: {currentQ.points}점</div>
+          <div className="points">{t.points}: {currentQ.points}{t.point}</div>
         </div>
 
         <div className="answer-section">
@@ -420,7 +420,7 @@ export default function LevelTest() {
               className="text-answer"
               value={currentAnswer}
               onChange={(e) => handleAnswerChange(e.target.value)}
-              placeholder="답변을 입력하세요..."
+              placeholder={t.enterAnswer}
               rows={8}
             />
           )}
