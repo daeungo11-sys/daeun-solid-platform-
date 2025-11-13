@@ -226,40 +226,123 @@
   color: #8b5cf6;
 }
 
-.input-form {
+.voice-controls {
   display: flex;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--card-bg);
+  border-radius: 0.75rem;
+  border: 2px solid var(--border);
 }
 
-.message-input {
+.mic-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
   flex: 1;
-  padding: 0.75rem 1rem;
+  justify-content: center;
+}
+
+.mic-button:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.mic-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mic-button.listening {
+  background: #ef4444;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.mic-button.listening:hover {
+  background: #dc2626;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+}
+
+.speech-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
   border: 2px solid var(--border);
   border-radius: 0.5rem;
-  font-size: 1rem;
   background: var(--bg);
   color: var(--text-primary);
-  transition: border-color 0.2s;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.message-input:focus {
-  outline: none;
+.speech-toggle:hover {
   border-color: var(--primary);
+  background: rgba(99, 102, 241, 0.1);
 }
 
-.message-input:disabled {
+.speech-toggle.enabled {
+  border-color: var(--success);
+  color: var(--success);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.speech-toggle.disabled {
+  border-color: var(--text-secondary);
+  color: var(--text-secondary);
   opacity: 0.6;
-  cursor: not-allowed;
 }
 
-.send-btn {
-  padding: 0.75rem 1.5rem;
-  white-space: nowrap;
+.speaking-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid var(--success);
+  border-radius: 0.5rem;
+  color: var(--success);
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
-.send-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.speaking-indicator .pulse {
+  width: 8px;
+  height: 8px;
+  background: var(--success);
+  border-radius: 50%;
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
 }
 
 @media (max-width: 768px) {
@@ -284,6 +367,19 @@
 
   .message {
     max-width: 90%;
+  }
+
+  .voice-controls {
+    flex-direction: column;
+  }
+
+  .mic-button {
+    width: 100%;
+  }
+
+  .speaking-indicator {
+    width: 100%;
+    justify-content: center;
   }
 }
 
