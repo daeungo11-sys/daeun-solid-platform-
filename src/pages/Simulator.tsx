@@ -227,6 +227,12 @@ export default function Simulator() {
   };
 
   const saveAndEndConversation = () => {
+    stopListening();
+    if (synthesisRef.current) {
+      synthesisRef.current.cancel();
+    }
+    setIsSpeaking(false);
+    
     if (messages.length > 0) {
       addConversationHistory({
         id: Date.now().toString(),
@@ -243,7 +249,6 @@ export default function Simulator() {
     }
     setMessages([]);
     setConversationStarted(false);
-    setUserInput('');
   };
 
   const resetConversation = () => {
