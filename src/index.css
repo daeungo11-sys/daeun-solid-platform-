@@ -16,6 +16,20 @@
   --text-secondary: #64748b;
   --border: #e5e7eb;
   --shadow-color: 16, 24, 40;
+  --bg: #ffffff;
+  --card-bg: #ffffff;
+  --shadow: 0 10px 30px rgba(16, 24, 40, 0.06);
+}
+
+.dark {
+  --background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  --surface: #1e293b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border: #334155;
+  --bg: #0f172a;
+  --card-bg: #1e293b;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 body {

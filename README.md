@@ -1,6 +1,6 @@
-# AI 영어 교육 플랫폼
+# AI 영어 학습 플랫폼
 
-AI와 함께하는 영어 학습 플랫폼으로, 말하기, 쓰기, 읽기를 종합적으로 연습할 수 있습니다.
+AI와 함께하는 종합 영어 학습 플랫폼으로, 말하기, 쓰기, 읽기, 교정, 회화 연습, 어휘 학습 등 다양한 기능을 제공합니다.
 
 ## 주요 기능
 
@@ -12,7 +12,7 @@ AI와 함께하는 영어 학습 플랫폼으로, 말하기, 쓰기, 읽기를 �
 
 ### ✍️ 쓰기 연습
 - 짧은 주제에 대한 에세이 작성
-- 3분 제한 시간 설정
+- 10분 제한 시간 설정
 - 실시간 단어 수 카운트
 - AI 피드백 (문법, 어휘, 구조, 종합 평가)
 
@@ -22,6 +22,46 @@ AI와 함께하는 영어 학습 플랫폼으로, 말하기, 쓰기, 읽기를 �
 - 즉시 채점 및 상세 해설 제공
 - 각 문제별 해결 방법 제시
 
+### 📝 문장 교정
+- 실시간 문법 교정
+- 상세한 설명 제공
+- 개인 피드백 리포트
+- 오답노트 기능
+
+### 💬 상황별 회화 시뮬레이터
+- 8가지 실생활 상황 (카페, 레스토랑, 쇼핑몰, 병원, 공항, 호텔, 면접, 회의)
+- AI와 실제 대화 연습
+- 실시간 평가 및 피드백
+- 대안 표현 제시
+
+### 📚 어휘 학습
+- 간격 반복 학습 시스템 (1일 → 3일 → 7일)
+- 레벨별 권장 단어 테스트
+- 내 단어장 테스트
+- 단어 추가/삭제/복습 기능
+
+### 🤖 AI 코치
+- 무제한 질문 & 답변
+- 레벨별 맞춤 설명
+- 실시간 대화형 학습
+- 학습 기록 저장
+
+### 📊 레벨 테스트
+- CEFR 기준 레벨 진단 (A1~C2)
+- 객관식, 서술형, 독해, 번역 문제
+- 강점 & 약점 분석
+- 맞춤형 학습 추천
+
+### 🌍 다국어 지원
+- 한국어
+- English
+- 日本語
+- 中文
+
+### 🌙 다크모드 지원
+- 라이트/다크 모드 전환
+- 자동 설정 저장
+
 ## 기술 스택
 
 - **React 18** - 사용자 인터페이스
@@ -29,7 +69,7 @@ AI와 함께하는 영어 학습 플랫폼으로, 말하기, 쓰기, 읽기를 �
 - **Vite** - 빠른 개발 환경
 - **React Router** - 라우팅
 - **Lucide React** - 아이콘
-- **CSS Variables** - 테마 및 스타일링
+- **LocalStorage** - 클라이언트 사이드 데이터 저장
 
 ## 시작하기
 
@@ -62,21 +102,28 @@ npm run preview
 ## 프로젝트 구조
 
 ```
-ai-english-platform/
-├── src/
-│   ├── pages/
-│   │   ├── Home.tsx           # 홈 페이지
-│   │   ├── Speaking.tsx       # 말하기 연습
-│   │   ├── Writing.tsx        # 쓰기 연습
-│   │   └── Reading.tsx        # 읽기 연습
-│   ├── App.tsx               # 메인 앱 컴포넌트
-│   ├── App.css
-│   ├── main.tsx              # 엔트리 포인트
-│   └── index.css             # 글로벌 스타일
-├── package.json
-├── tsconfig.json
-├── vite.config.ts
-└── README.md
+src/
+├── pages/              # 페이지 컴포넌트
+│   ├── Home.tsx
+│   ├── Speaking.tsx
+│   ├── Writing.tsx
+│   ├── Reading.tsx
+│   ├── Correction.tsx
+│   ├── Simulator.tsx
+│   ├── Vocabulary.tsx
+│   ├── AICoach.tsx
+│   ├── LevelTest.tsx
+│   ├── Calendar.tsx
+│   └── MyPage.tsx
+├── contexts/           # React Context
+│   ├── LanguageContext.tsx
+│   └── ThemeContext.tsx
+├── lib/                # 유틸리티
+│   ├── storage.ts
+│   ├── translations.ts
+│   └── recommendedWords.ts
+├── App.tsx            # 메인 앱 컴포넌트
+└── main.tsx           # 엔트리 포인트
 ```
 
 ## 주요 특징
@@ -87,24 +134,14 @@ ai-english-platform/
 ### ⏱️ 시간 제한 시스템
 실제 시험 환경을 모방한 시간 제한 기능
 
-### 🤖 AI 피드백 (시뮬레이션)
-현재는 데모 데이터를 사용하며, 실제 AI 통합 시 OpenAI API 등 사용 가능
+### 🤖 AI 피드백
+실시간 AI 기반 피드백 제공
 
 ### 🎨 현대적인 UI/UX
 직관적이고 사용하기 쉬운 인터페이스
 
-## 🌐 배포
-- **Vercel**: [배포 링크](https://ai-english-platform.vercel.app)
-- **GitHub**: https://github.com/daeungo11-sys/ai-english-platform
-
-## 향후 계획
-
-- [ ] OpenAI API를 통한 실제 AI 피드백 연동
-- [ ] 음성 인식 및 발음 분석 고도화
-- [ ] 사용자 진도 추적 시스템
-- [ ] 더 많은 문제 및 연습 자료 추가
-- [ ] 사용자 인증 및 데이터 저장
-- [ ] 통계 및 성과 분석 대시보드
+### 💾 LocalStorage 기반 저장
+모든 학습 데이터를 브라우저에 안전하게 저장
 
 ## 라이선스
 
