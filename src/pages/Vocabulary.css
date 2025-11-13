@@ -234,15 +234,21 @@
   text-align: center;
   padding: 3rem;
   color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
 }
 
 .empty-state p {
-  margin-bottom: 2rem;
+  margin: 0;
   font-size: 1.125rem;
+  color: var(--text-secondary);
 }
 
-.empty-state button {
+.empty-state .btn-primary {
   margin-top: 0;
+  margin-bottom: 0;
 }
 
 .test-container {
