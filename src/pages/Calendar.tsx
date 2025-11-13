@@ -130,9 +130,9 @@ export default function Calendar() {
 
   const getTypeLabel = (type: string) => {
     switch(type) {
-      case 'speaking': return '말하기'
-      case 'writing': return '쓰기'
-      case 'reading': return '읽기'
+      case 'speaking': return t.speaking
+      case 'writing': return t.writing
+      case 'reading': return t.reading
       default: return type
     }
   }
@@ -165,13 +165,13 @@ export default function Calendar() {
 
           <div className="calendar-grid">
             <div className="weekdays">
-              <div>일</div>
-              <div>월</div>
-              <div>화</div>
-              <div>수</div>
-              <div>목</div>
-              <div>금</div>
-              <div>토</div>
+              <div>{t.sunday}</div>
+              <div>{t.monday}</div>
+              <div>{t.tuesday}</div>
+              <div>{t.wednesday}</div>
+              <div>{t.thursday}</div>
+              <div>{t.friday}</div>
+              <div>{t.saturday}</div>
             </div>
 
             {calendarGrid.map((week, weekIndex) => (
@@ -232,7 +232,7 @@ export default function Calendar() {
                   <div className="entry-difficulty">
                     <Flag size={14} />
                     <span style={{ color: getDifficultyColor(entry.difficulty) }}>
-                      난이도: {entry.difficulty}
+                      {t.difficultyLabel} {entry.difficulty}
                     </span>
                   </div>
                   <p className="entry-notes">{entry.notes}</p>
@@ -249,7 +249,7 @@ export default function Calendar() {
             <h3>{t.learningRecord} {selectedEntry ? t.editRecord : t.addRecord}</h3>
             
             <div className="form-group">
-              <label>날짜</label>
+              <label>{t.date}</label>
               <input type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
             </div>
 
@@ -263,7 +263,7 @@ export default function Calendar() {
                     checked={formData.type === 'speaking'} 
                     onChange={(e) => setFormData({...formData, type: e.target.value as 'speaking'})}
                   />
-                  <span className="radio-label speaking">말하기</span>
+                  <span className="radio-label speaking">{t.speaking}</span>
                 </label>
                 <label>
                   <input 
@@ -272,7 +272,7 @@ export default function Calendar() {
                     checked={formData.type === 'writing'} 
                     onChange={(e) => setFormData({...formData, type: e.target.value as 'writing'})}
                   />
-                  <span className="radio-label writing">쓰기</span>
+                  <span className="radio-label writing">{t.writing}</span>
                 </label>
                 <label>
                   <input 
@@ -281,7 +281,7 @@ export default function Calendar() {
                     checked={formData.type === 'reading'} 
                     onChange={(e) => setFormData({...formData, type: e.target.value as 'reading'})}
                   />
-                  <span className="radio-label reading">읽기</span>
+                  <span className="radio-label reading">{t.reading}</span>
                 </label>
               </div>
             </div>
@@ -303,7 +303,7 @@ export default function Calendar() {
               <textarea 
                 value={formData.notes} 
                 onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                placeholder="어려웠던 점이나 배운 내용을 기록하세요..."
+                placeholder={t.memoPlaceholder}
                 rows={5}
               />
             </div>
