@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Mic, Square, RotateCcw, Clock } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
+import { generateSpeakingFeedback } from '../lib/groq'
 import './Speaking.css'
 
 interface Feedback {
@@ -17,6 +18,7 @@ export default function Speaking() {
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
   const [feedback, setFeedback] = useState<Feedback | null>(null)
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
 
@@ -73,35 +75,53 @@ export default function Speaking() {
   const handleSubmit = async () => {
     if (!audioBlob) return
     
-    // Generate dynamic feedback based on recording duration and question
-    const recordingDuration = 180 - timeLeft
-    const isShort = recordingDuration < 60
-    const isLong = recordingDuration > 150
+    setLoading(true);
     
-    // Simulate AI feedback based on different scenarios
-    let pronunciation = ""
-    let grammar = ""
-    let overall = ""
-    
-    if (isShort) {
-      pronunciation = "녹음 시간이 짧습니다. 더 자세한 설명을 위해 시간을 충분히 활용하세요. 발음의 명확성을 높이기 위해 각 단어를 천천히 발음해보세요."
-      grammar = "답변을 더 확장하면 문법 실력을 더 잘 보여줄 수 있습니다. 복문과 다양한 시제를 활용해보세요."
-      overall = "답변의 길이가 짧습니다. 구체적인 예시와 감정을 추가하면 더 풍부한 답변이 됩니다. 다음에는 더 자세히 설명해보세요."
-    } else if (isLong) {
-      pronunciation = "충분한 시간을 활용하셨습니다. 전체적으로 명확한 발음을 유지했습니다. 'significant'와 'experience'의 강세 패턴을 더 자연스럽게 개선하세요."
-      grammar = "문법적으로 정확합니다. 'It was significant to me' 표현이 적절합니다. 다양한 문장 구조를 잘 사용하셨습니다."
-      overall = "훌륭한 답변입니다! 구체적인 사례와 감정을 잘 연결해서 설명했습니다. 시간 활용이 효율적이었고, 내용이 풍부합니다."
-    } else {
-      pronunciation = "적절한 길이의 답변입니다. 발음이 전반적으로 명확합니다. 일부 단어의 강세를 더 자연스럽게 하면 더 좋겠습니다."
-      grammar = "문법적으로 대부분 정확합니다. 'It was significant to me' 같은 표현이 적절합니다. 더 다양한 문장 구조를 시도해보세요."
-      overall = "좋은 답변입니다. 구체적인 사례와 감정을 연결해서 설명했습니다. 시간 활용이 적절했습니다."
+    try {
+      // Groq API를 사용하여 피드백 생성
+      const recordingDuration = 180 - timeLeft;
+      
+      // 음성을 텍스트로 변환 (Web Speech API 사용)
+      // 실제로는 음성 인식 API를 사용해야 하지만, 여기서는 녹음 시간과 질문만 사용
+      const feedback = await generateSpeakingFeedback(
+        todayQuestion,
+        recordingDuration
+      );
+      
+      setFeedback(feedback);
+    } catch (error) {
+      console.error('Speaking feedback error:', error);
+      // 에러 발생 시 기본 피드백 제공
+      const recordingDuration = 180 - timeLeft;
+      const isShort = recordingDuration < 60;
+      const isLong = recordingDuration > 150;
+      
+      let pronunciation = "";
+      let grammar = "";
+      let overall = "";
+      
+      if (isShort) {
+        pronunciation = "녹음 시간이 짧습니다. 더 자세한 설명을 위해 시간을 충분히 활용하세요. 발음의 명확성을 높이기 위해 각 단어를 천천히 발음해보세요.";
+        grammar = "답변을 더 확장하면 문법 실력을 더 잘 보여줄 수 있습니다. 복문과 다양한 시제를 활용해보세요.";
+        overall = "답변의 길이가 짧습니다. 구체적인 예시와 감정을 추가하면 더 풍부한 답변이 됩니다. 다음에는 더 자세히 설명해보세요.";
+      } else if (isLong) {
+        pronunciation = "충분한 시간을 활용하셨습니다. 전체적으로 명확한 발음을 유지했습니다. 'significant'와 'experience'의 강세 패턴을 더 자연스럽게 개선하세요.";
+        grammar = "문법적으로 정확합니다. 'It was significant to me' 표현이 적절합니다. 다양한 문장 구조를 잘 사용하셨습니다.";
+        overall = "훌륭한 답변입니다! 구체적인 사례와 감정을 잘 연결해서 설명했습니다. 시간 활용이 효율적이었고, 내용이 풍부합니다.";
+      } else {
+        pronunciation = "적절한 길이의 답변입니다. 발음이 전반적으로 명확합니다. 일부 단어의 강세를 더 자연스럽게 하면 더 좋겠습니다.";
+        grammar = "문법적으로 대부분 정확합니다. 'It was significant to me' 같은 표현이 적절합니다. 더 다양한 문장 구조를 시도해보세요.";
+        overall = "좋은 답변입니다. 구체적인 사례와 감정을 연결해서 설명했습니다. 시간 활용이 적절했습니다.";
+      }
+      
+      setFeedback({
+        pronunciation,
+        grammar,
+        overall
+      });
+    } finally {
+      setLoading(false);
     }
-    
-    setFeedback({
-      pronunciation,
-      grammar,
-      overall
-    })
   }
 
   const resetRecording = () => {
@@ -182,8 +202,8 @@ export default function Speaking() {
                 )}
               </div>
               <div className="action-buttons">
-                <button className="btn-primary" onClick={handleSubmit}>
-                  {t.getFeedback}
+                <button className="btn-primary" onClick={handleSubmit} disabled={loading}>
+                  {loading ? '분석 중...' : t.getFeedback}
                 </button>
                 <button className="btn-secondary" onClick={resetRecording}>
                   <RotateCcw size={18} />

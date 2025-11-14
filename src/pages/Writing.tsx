@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { PenTool, Clock, RotateCcw } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
+import { generateWritingFeedback } from '../lib/groq'
 import './Writing.css'
 
 interface Feedback {
@@ -17,6 +18,7 @@ export default function Writing() {
   const [wordCount, setWordCount] = useState(0)
   const [isActive, setIsActive] = useState(false)
   const [feedback, setFeedback] = useState<Feedback | null>(null)
+  const [loading, setLoading] = useState(false)
 
   const todayTopic = "Some people believe that technology has made our lives more complicated. Do you agree or disagree? Explain your position with specific examples."
 
@@ -46,68 +48,81 @@ export default function Writing() {
     setFeedback(null)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!text.trim()) {
       alert('텍스트를 입력해주세요.')
       return
     }
 
-    // Generate dynamic feedback based on text content
-    const wordCount = text.trim().split(/\s+/).filter(word => word.length > 0).length
-    const hasAgree = text.toLowerCase().includes('agree') || text.toLowerCase().includes('동의')
-    const hasDisagree = text.toLowerCase().includes('disagree') || text.toLowerCase().includes('반대')
-    const hasExamples = text.toLowerCase().includes('example') || text.toLowerCase().includes('예시') || text.toLowerCase().includes('instance')
-    const hasTechnology = text.toLowerCase().includes('technology') || text.toLowerCase().includes('기술')
-    
-    let grammar = ""
-    let vocabulary = ""
-    let structure = ""
-    let overall = ""
-    
-    // Grammar feedback
-    if (wordCount < 50) {
-      grammar = "에세이가 짧습니다. 더 많은 문장을 작성하여 문법 실력을 보여주세요. 다양한 시제와 문장 구조를 활용해보세요."
-    } else if (wordCount > 200) {
-      grammar = "충분한 분량의 에세이입니다. 대부분의 문법이 정확합니다. 'complicated'를 사용한 부분이 자연스럽습니다. 제안: 'more complicated' 대신 'increasingly complex'를 사용하면 더 formal한 톤이 됩니다."
-    } else {
-      grammar = "적절한 길이의 에세이입니다. 대부분의 문법이 정확합니다. 복문과 다양한 시제를 더 활용하면 좋겠습니다."
-    }
-    
-    // Vocabulary feedback
-    if (hasTechnology) {
-      vocabulary = "적절한 어휘를 사용했습니다. 'technology', 'believe', 'specific examples' 등이 적절합니다. 동의어 활용을 더 늘리면 좋겠습니다."
-    } else {
-      vocabulary = "어휘 사용이 적절합니다. 주제와 관련된 전문 용어를 더 추가하면 더 풍부한 표현이 됩니다."
-    }
-    
-    // Structure feedback
-    if (hasAgree || hasDisagree) {
-      if (hasExamples) {
-        structure = "명확한 논리 구조를 갖추고 있습니다. 서론에서 입장을 명확히 제시하고, 본론에서 구체적인 예시를 제시했습니다. 서론-본론-결론 구조가 잘 드러납니다."
+    setLoading(true);
+
+    try {
+      // Groq API를 사용하여 피드백 생성
+      const wordCount = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+      const feedback = await generateWritingFeedback(
+        todayTopic,
+        text,
+        wordCount
+      );
+      
+      setFeedback(feedback);
+    } catch (error) {
+      console.error('Writing feedback error:', error);
+      // 에러 발생 시 기본 피드백 제공
+      const wordCount = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+      const hasAgree = text.toLowerCase().includes('agree') || text.toLowerCase().includes('동의');
+      const hasDisagree = text.toLowerCase().includes('disagree') || text.toLowerCase().includes('반대');
+      const hasExamples = text.toLowerCase().includes('example') || text.toLowerCase().includes('예시') || text.toLowerCase().includes('instance');
+      const hasTechnology = text.toLowerCase().includes('technology') || text.toLowerCase().includes('기술');
+      
+      let grammar = "";
+      let vocabulary = "";
+      let structure = "";
+      let overall = "";
+      
+      if (wordCount < 50) {
+        grammar = "에세이가 짧습니다. 더 많은 문장을 작성하여 문법 실력을 보여주세요. 다양한 시제와 문장 구조를 활용해보세요.";
+      } else if (wordCount > 200) {
+        grammar = "충분한 분량의 에세이입니다. 대부분의 문법이 정확합니다. 'complicated'를 사용한 부분이 자연스럽습니다. 제안: 'more complicated' 대신 'increasingly complex'를 사용하면 더 formal한 톤이 됩니다.";
       } else {
-        structure = "명확한 입장을 제시했습니다. 본론에서 더 구체적인 예시를 추가하면 설득력이 높아집니다."
+        grammar = "적절한 길이의 에세이입니다. 대부분의 문법이 정확합니다. 복문과 다양한 시제를 더 활용하면 좋겠습니다.";
       }
-    } else {
-      structure = "에세이 구조를 개선할 수 있습니다. 명확한 입장(동의/반대)을 제시하고, 그에 대한 근거와 예시를 추가하면 더 설득력 있는 에세이가 됩니다."
+      
+      if (hasTechnology) {
+        vocabulary = "적절한 어휘를 사용했습니다. 'technology', 'believe', 'specific examples' 등이 적절합니다. 동의어 활용을 더 늘리면 좋겠습니다.";
+      } else {
+        vocabulary = "어휘 사용이 적절합니다. 주제와 관련된 전문 용어를 더 추가하면 더 풍부한 표현이 됩니다.";
+      }
+      
+      if (hasAgree || hasDisagree) {
+        if (hasExamples) {
+          structure = "명확한 논리 구조를 갖추고 있습니다. 서론에서 입장을 명확히 제시하고, 본론에서 구체적인 예시를 제시했습니다. 서론-본론-결론 구조가 잘 드러납니다.";
+        } else {
+          structure = "명확한 입장을 제시했습니다. 본론에서 더 구체적인 예시를 추가하면 설득력이 높아집니다.";
+        }
+      } else {
+        structure = "에세이 구조를 개선할 수 있습니다. 명확한 입장(동의/반대)을 제시하고, 그에 대한 근거와 예시를 추가하면 더 설득력 있는 에세이가 됩니다.";
+      }
+      
+      if (wordCount < 50) {
+        overall = "에세이가 짧습니다. 더 많은 내용을 추가하여 주제에 대해 깊이 있게 다뤄보세요. 구체적인 예시와 근거를 포함하면 좋겠습니다.";
+      } else if (wordCount > 200 && hasAgree && hasExamples) {
+        overall = "훌륭한 에세이입니다! 제한된 시간에 명확한 입장을 제시하고 논리적으로 설명했습니다. 예시가 풍부하고 설득력이 높습니다.";
+      } else if (wordCount > 100) {
+        overall = "좋은 에세이입니다. 명확한 입장을 제시하고 논리적으로 설명했습니다. 예시를 더 풍부하게 하면 완벽한 에세이가 될 것입니다.";
+      } else {
+        overall = "적절한 에세이입니다. 더 많은 내용과 구체적인 예시를 추가하면 더 설득력 있는 에세이가 됩니다.";
+      }
+      
+      setFeedback({
+        grammar,
+        vocabulary,
+        structure,
+        overall
+      });
+    } finally {
+      setLoading(false);
     }
-    
-    // Overall feedback
-    if (wordCount < 50) {
-      overall = "에세이가 짧습니다. 더 많은 내용을 추가하여 주제에 대해 깊이 있게 다뤄보세요. 구체적인 예시와 근거를 포함하면 좋겠습니다."
-    } else if (wordCount > 200 && hasAgree && hasExamples) {
-      overall = "훌륭한 에세이입니다! 제한된 시간에 명확한 입장을 제시하고 논리적으로 설명했습니다. 예시가 풍부하고 설득력이 높습니다."
-    } else if (wordCount > 100) {
-      overall = "좋은 에세이입니다. 명확한 입장을 제시하고 논리적으로 설명했습니다. 예시를 더 풍부하게 하면 완벽한 에세이가 될 것입니다."
-    } else {
-      overall = "적절한 에세이입니다. 더 많은 내용과 구체적인 예시를 추가하면 더 설득력 있는 에세이가 됩니다."
-    }
-    
-    setFeedback({
-      grammar,
-      vocabulary,
-      structure,
-      overall
-    })
   }
 
   const resetWriting = () => {
@@ -172,8 +187,8 @@ export default function Writing() {
                 disabled={timeLeft === 0}
               />
               <div className="editor-footer">
-                <button className="btn-primary" onClick={handleSubmit} disabled={timeLeft === 0}>
-                  {t.getFeedback}
+                <button className="btn-primary" onClick={handleSubmit} disabled={timeLeft === 0 || loading}>
+                  {loading ? '분석 중...' : t.getFeedback}
                 </button>
                 <button className="btn-secondary" onClick={resetWriting}>
                   <RotateCcw size={18} />

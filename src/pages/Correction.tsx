@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { addSentenceHistory, updateProgress, generatePersonalFeedback } from '../lib/storage';
 import { useLanguage } from '../contexts/LanguageContext';
+import { correctGrammar } from '../lib/groq';
 import './Correction.css';
 
 interface CorrectionResult {
@@ -31,33 +32,22 @@ export default function Correction() {
     setResult(null);
 
     try {
-      // 시뮬레이션: 실제로는 API 호출
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Groq API를 사용하여 문법 교정
+      const result = await correctGrammar(sentence);
       
-      // 간단한 문법 체크 시뮬레이션
-      const corrected = sentence
-        .replace(/i\s+/g, 'I ')
-        .replace(/i'm/g, "I'm")
-        .replace(/i've/g, "I've")
-        .replace(/i'll/g, "I'll");
-      
-      const mockResult: CorrectionResult = {
-        original: sentence,
-        corrected: corrected !== sentence ? corrected : sentence,
-        reason: corrected !== sentence 
-          ? '대문자 사용이 필요합니다. "I"는 항상 대문자로 써야 합니다.'
-          : '문법적으로 올바른 문장입니다.',
-        errorType: corrected !== sentence ? '대소문자 오류' : '오류 없음',
-      };
-      
-      setResult(mockResult);
+      setResult({
+        original: result.original,
+        corrected: result.corrected,
+        reason: result.reason,
+        errorType: result.errorType,
+      });
 
       addSentenceHistory({
         id: Date.now().toString(),
-        original: mockResult.original,
-        corrected: mockResult.corrected,
-        reason: mockResult.reason,
-        errorType: mockResult.errorType,
+        original: result.original,
+        corrected: result.corrected,
+        reason: result.reason,
+        errorType: result.errorType,
         timestamp: new Date().toISOString(),
       });
 

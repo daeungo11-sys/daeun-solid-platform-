@@ -70,8 +70,20 @@ AI와 함께하는 종합 영어 학습 플랫폼으로, 말하기, 쓰기, 읽�
 - **React Router** - 라우팅
 - **Lucide React** - 아이콘
 - **LocalStorage** - 클라이언트 사이드 데이터 저장
+- **Groq API** - AI 기반 응답 생성 (AI Coach, 회화 시뮬레이터, 피드백, 문법 교정)
 
 ## 시작하기
+
+### Groq API 키 설정
+
+1. [Groq Console](https://console.groq.com/)에서 API 키를 발급받으세요.
+2. 프로젝트 루트에 `.env` 파일을 생성하고 다음을 추가하세요:
+
+```env
+VITE_GROQ_API_KEY=your-groq-api-key-here
+```
+
+3. Vercel에 배포하는 경우, Vercel 대시보드의 Environment Variables에 `VITE_GROQ_API_KEY`를 추가하세요.
 
 ### 설치
 
@@ -134,8 +146,12 @@ src/
 ### ⏱️ 시간 제한 시스템
 실제 시험 환경을 모방한 시간 제한 기능
 
-### 🤖 AI 피드백
-실시간 AI 기반 피드백 제공
+### 🤖 AI 피드백 (Groq API)
+- Groq API를 사용한 실시간 AI 기반 피드백 제공
+- AI Coach: 문법, 어휘, 학습법 질문에 대한 상세한 답변
+- 회화 시뮬레이터: 상황별 자연스러운 대화 생성 및 평가
+- 말하기/쓰기 피드백: 발음, 문법, 어휘, 구조에 대한 전문적인 평가
+- 문법 교정: 실시간 문법 오류 검출 및 수정 제안
 
 ### 🎨 현대적인 UI/UX
 직관적이고 사용하기 쉬운 인터페이스

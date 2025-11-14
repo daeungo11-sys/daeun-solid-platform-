@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { getUserLevel, getLevelName, addAICoachHistory } from '../lib/storage';
 import { useLanguage } from '../contexts/LanguageContext';
+import { generateAICoachResponse, type GroqMessage } from '../lib/groq';
 import './AICoach.css';
 
 interface Message {
@@ -33,6 +34,11 @@ export default function AICoach() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // 현재 언어 가져오기
+  const getCurrentLanguage = () => {
+    return localStorage.getItem('language') || 'ko';
+  };
 
   // 향상된 AI 응답 생성 함수
   const generateResponse = (userInput: string): string => {
@@ -602,11 +608,22 @@ If + 주어 + had + p.p., 주어 + would have + p.p.
     setLoading(true);
 
     try {
-      // 시뮬레이션: 실제로는 API 호출
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Groq API를 사용하여 응답 생성
+      const conversationHistory: GroqMessage[] = messages
+        .slice(1) // 첫 번째 시스템 메시지 제외
+        .map(msg => ({
+          role: msg.role as 'user' | 'assistant',
+          content: msg.content
+        }));
 
-      // 향상된 응답 생성
-      const response = generateResponse(userInput);
+      const currentLang = getCurrentLanguage();
+      
+      const response = await generateAICoachResponse(
+        userInput,
+        conversationHistory,
+        userLevel,
+        currentLang
+      );
 
       const assistantMessage: Message = {
         role: 'assistant',
@@ -620,14 +637,19 @@ If + 주어 + had + p.p., 주어 + would have + p.p.
         answer: response,
       });
     } catch (error) {
-      console.error(error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: 'assistant',
-          content: t.aiCoachError,
-        },
-      ]);
+      console.error('AI Coach Error:', error);
+      // 에러 발생 시 기본 응답 생성 함수 사용
+      const fallbackResponse = generateResponse(userInput);
+      const assistantMessage: Message = {
+        role: 'assistant',
+        content: fallbackResponse,
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
+      
+      addAICoachHistory({
+        question: userInput,
+        answer: fallbackResponse,
+      });
     } finally {
       setLoading(false);
     }

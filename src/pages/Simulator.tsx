@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Mic, Square, Volume2, VolumeX } from 'lucide-react';
 import { updateProgress, addConversationHistory } from '../lib/storage';
 import { useLanguage } from '../contexts/LanguageContext';
+import { generateConversationResponse, evaluateResponse, type GroqMessage } from '../lib/groq';
 import './Simulator.css';
 
 interface Message {
@@ -153,29 +154,31 @@ export default function Simulator() {
     setLoading(true);
 
     try {
-      // 시뮬레이션: 실제로는 API 호출
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Groq API를 사용하여 회화 응답 생성
+      const conversationHistory: GroqMessage[] = messages.map(msg => ({
+        role: msg.role as 'user' | 'assistant',
+        content: msg.content
+      }));
 
-      // 시나리오별 응답 생성
-      const scenarioResponses: Record<string, string[]> = {
-        '카페': ['What size would you like?', 'Would you like anything else?', 'That will be $5.50.', 'Here is your order.'],
-        '레스토랑': ['What would you like to order?', 'How was everything?', 'Would you like dessert?', 'Here is your bill.'],
-        '쇼핑몰': ['What size are you looking for?', 'Would you like to try it on?', 'That looks great on you!', 'How would you like to pay?'],
-        '병원': ['How long have you had these symptoms?', 'I\'ll prescribe some medication.', 'Take this twice a day.', 'Do you have any allergies?'],
-        '공항': ['How many bags are you checking?', 'Your gate is A12.', 'Boarding will begin in 30 minutes.', 'Have a safe flight!'],
-        '호텔': ['How many nights will you be staying?', 'Breakfast is served from 7 to 10.', 'Your room is on the 5th floor.', 'Is there anything else I can help you with?'],
-        '면접': ['Why are you interested in this position?', 'Do you have any questions for us?', 'Tell me about your experience.', 'What are your strengths?'],
-        '회의': ['What are your thoughts on this?', 'Any other questions?', 'Let\'s discuss the next steps.', 'Does everyone agree?'],
-      };
+      const aiResponse = await generateConversationResponse(
+        selectedScenario,
+        conversationHistory,
+        transcript
+      );
 
-      const responses = scenarioResponses[selectedScenario] || ['How can I help you?'];
-      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-
-      // 간단한 평가 시뮬레이션
-      const evaluation = {
-        evaluation: 'Good use of basic vocabulary. Try to use more natural expressions.',
-        alternative: transcript.toLowerCase().includes('hello') ? 'Hi there!' : 'Nice to meet you!',
-      };
+      // 사용자 답변 평가
+      let evaluation = null;
+      try {
+        const context = messages[messages.length - 1]?.content || '';
+        evaluation = await evaluateResponse(transcript, context);
+      } catch (evalError) {
+        console.error('Evaluation error:', evalError);
+        // 평가 실패 시 기본 평가 제공
+        evaluation = {
+          evaluation: 'Good use of basic vocabulary. Try to use more natural expressions.',
+          alternative: transcript.toLowerCase().includes('hello') ? 'Hi there!' : 'Nice to meet you!',
+        };
+      }
 
       setMessages((prev) => {
         const updated = [...prev];
@@ -183,17 +186,23 @@ export default function Simulator() {
           ...updated[updated.length - 1],
           evaluation,
         };
-        return [...updated, { role: 'assistant', content: randomResponse }];
+        return [...updated, { role: 'assistant', content: aiResponse }];
       });
 
       // Speak AI response
       if (speechEnabled) {
-        handleAIResponse(randomResponse);
+        handleAIResponse(aiResponse);
       }
 
       updateProgress(0);
     } catch (err) {
-      console.error(err);
+      console.error('Conversation error:', err);
+      // 에러 발생 시 기본 응답 제공
+      const fallbackResponse = getScenarioGreeting(selectedScenario);
+      setMessages((prev) => [
+        ...prev,
+        { role: 'assistant', content: 'I apologize, but I encountered an error. Could you please repeat that?' }
+      ]);
     } finally {
       setLoading(false);
     }
