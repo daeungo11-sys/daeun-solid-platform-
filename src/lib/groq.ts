@@ -36,9 +36,7 @@ export async function generateAICoachResponse(
   // 언어별 답변 지시
   const languageInstructions: { [key: string]: string } = {
     ko: '한국어로 답변해주세요.',
-    en: 'Please answer in English.',
-    ja: '日本語で回答してください。',
-    zh: '请用中文回答。'
+    en: 'Please answer in English.'
   };
   
   const languageInstruction = languageInstructions[language] || languageInstructions['ko'];

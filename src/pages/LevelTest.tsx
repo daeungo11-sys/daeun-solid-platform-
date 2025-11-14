@@ -152,14 +152,160 @@ const shuffleQuestions = (questions: Question[]): Question[] => {
 }
 
 export default function LevelTest() {
-  const { t } = useLanguage()
-  const [questions, setQuestions] = useState<Question[]>(() => shuffleQuestions(mockQuestions))
+  const { t, language } = useLanguage()
+  
+  // 언어별 문제 세트
+  const getQuestionsByLanguage = (lang: string): Question[] => {
+    if (lang === 'en') {
+      return [
+        {
+          id: 1,
+          type: 'multiple',
+          question: 'What is the most appropriate word to fill in the blank?\n\n"I don\'t know ___ book you want."',
+          options: ['which', 'what', 'where', 'when'],
+          correctAnswer: 'which',
+          points: 1
+        },
+        {
+          id: 2,
+          type: 'multiple',
+          question: 'What tense is used in "I have been studying English for three years."?',
+          options: ['Present Perfect', 'Past Perfect', 'Present Continuous', 'Past'],
+          correctAnswer: 'Present Perfect',
+          points: 1
+        },
+        {
+          id: 3,
+          type: 'multiple',
+          question: 'Which sentence represents the second conditional (hypothetical past)?',
+          options: [
+            'If I were you, I would go.',
+            'If I go, I will see him.',
+            'If I went, I saw him.',
+            'If I had gone, I would have seen him.'
+          ],
+          correctAnswer: 'If I were you, I would go.',
+          points: 2
+        },
+        {
+          id: 4,
+          type: 'essay',
+          question: 'Write 50-100 words in English on the following topic: "What are the benefits of learning a foreign language?"',
+          correctAnswer: '',
+          points: 5
+        },
+        {
+          id: 5,
+          type: 'essay',
+          question: 'Answer in 3-5 sentences: "Describe your favorite hobby."',
+          correctAnswer: '',
+          points: 5
+        },
+        {
+          id: 6,
+          type: 'reading',
+          passage: 'Climate change is one of the most pressing issues of our time. Scientists have been warning about the consequences of global warming for decades. Rising sea levels, extreme weather events, and loss of biodiversity are just some of the impacts we are already experiencing. It is crucial that we take immediate action to reduce carbon emissions and transition to renewable energy sources.',
+          question: 'What is the main topic of this passage?',
+          options: ['Environmental Protection', 'Climate Change', 'Energy', 'Scientific Development'],
+          correctAnswer: 'Climate Change',
+          points: 2
+        },
+        {
+          id: 7,
+          type: 'reading',
+          passage: 'The internet has revolutionized the way we communicate, work, and learn. However, it also brings challenges such as privacy concerns and information overload. We must learn to use this powerful tool responsibly while protecting our personal information.',
+          question: 'According to the passage, what is a disadvantage of the internet?',
+          options: ['Communication', 'Information Overload', 'Ways of Working', 'Learning Methods'],
+          correctAnswer: 'Information Overload',
+          points: 2
+        },
+        {
+          id: 8,
+          type: 'translation',
+          question: 'Translate the following sentence into English: "I promised to meet my friend tomorrow."',
+          correctAnswer: "I promised to meet my friend tomorrow.",
+          points: 3
+        },
+        {
+          id: 9,
+          type: 'translation',
+          question: 'Translate the following sentence into Korean: "She has been working on this project for two months."',
+          correctAnswer: 'She has been working on this project for two months.',
+          points: 3
+        },
+        {
+          id: 10,
+          type: 'multiple',
+          question: 'Which sentence is in the passive voice?',
+          options: [
+            'The teacher explains the lesson.',
+            'The lesson is explained by the teacher.',
+            'The teacher is explaining the lesson.',
+            'The teacher explained the lesson.'
+          ],
+          correctAnswer: 'The lesson is explained by the teacher.',
+          points: 2
+        },
+        {
+          id: 11,
+          type: 'reading',
+          passage: 'Artificial intelligence is transforming industries across the globe. From healthcare to finance, AI applications are making processes more efficient and accurate. However, ethical considerations must be addressed to ensure AI benefits all of humanity.',
+          question: 'What is a positive effect of AI?',
+          options: ['Ethical Considerations', 'Improved Efficiency and Accuracy', 'Industry Transformation', 'Human Benefits'],
+          correctAnswer: 'Improved Efficiency and Accuracy',
+          points: 2
+        },
+        {
+          id: 12,
+          type: 'essay',
+          question: 'Write your opinion in 50-100 words in English: "What is your opinion on online learning?"',
+          correctAnswer: '',
+          points: 5
+        },
+        {
+          id: 13,
+          type: 'translation',
+          question: 'Translate the following sentence into English: "If it rains, we will stay at home."',
+          correctAnswer: "If it rains, we will stay at home.",
+          points: 3
+        },
+        {
+          id: 14,
+          type: 'multiple',
+          question: 'Which sentence correctly uses a relative pronoun?',
+          options: [
+            'This is the book who I bought.',
+            'This is the book which I bought.',
+            'This is the book where I bought.',
+            'This is the book what I bought.'
+          ],
+          correctAnswer: 'This is the book which I bought.',
+          points: 2
+        }
+      ]
+    } else {
+      return mockQuestions
+    }
+  }
+  
+  const [questions, setQuestions] = useState<Question[]>(() => shuffleQuestions(getQuestionsByLanguage(language)).slice(0, 10))
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<number, string>>({})
   const [timeSpent, setTimeSpent] = useState(0)
   const [isFinished, setIsFinished] = useState(false)
   const [results, setResults] = useState<any>(null)
   const [startTime] = useState(Date.now())
+
+  // 언어가 변경되면 문제도 업데이트
+  useEffect(() => {
+    if (!isFinished) {
+      const allQuestions = getQuestionsByLanguage(language)
+      const shuffled = shuffleQuestions(allQuestions)
+      setQuestions(shuffled.slice(0, 10))
+      setCurrentQuestion(0)
+      setAnswers({})
+    }
+  }, [language])
 
   useEffect(() => {
     if (!isFinished) {
@@ -406,20 +552,20 @@ export default function LevelTest() {
             </div>
           </div>
 
-          <button className="retry-button"           onClick={() => {
-            // 새로운 문제 세트 생성 (더 많은 문제를 섞어서 선택)
-            const allQuestions = [...mockQuestions]
-            const shuffled = shuffleQuestions(allQuestions)
-            // 10개 문제를 랜덤하게 선택
-            const selectedQuestions = shuffled.slice(0, 10)
-            setQuestions(selectedQuestions)
-            setCurrentQuestion(0)
-            setAnswers({})
-            setTimeSpent(0)
-            setIsFinished(false)
-            setResults(null)
-          }}>
-            {t.retryTest}
+                  <button className="retry-button" onClick={() => {
+                    // 언어에 맞는 새로운 문제 세트 생성
+                    const allQuestions = getQuestionsByLanguage(language)
+                    const shuffled = shuffleQuestions(allQuestions)
+                    // 10개 문제를 랜덤하게 선택
+                    const selectedQuestions = shuffled.slice(0, 10)
+                    setQuestions(selectedQuestions)
+                    setCurrentQuestion(0)
+                    setAnswers({})
+                    setTimeSpent(0)
+                    setIsFinished(false)
+                    setResults(null)
+                  }}>
+                    {t.retryTest}
           </button>
         </div>
       </div>
