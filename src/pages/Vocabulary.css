@@ -30,6 +30,8 @@
   padding: 0.4375rem 0.75rem;
   font-size: 0.8125rem;
   white-space: nowrap;
+  width: auto;
+  max-width: fit-content;
 }
 
 .stats-grid {
@@ -225,17 +227,22 @@
   display: flex;
   gap: 0.5rem;
   flex-shrink: 0;
+  align-items: center;
 }
 
 .btn-success {
   background: #10b981;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0.4375rem 0.875rem;
   border-radius: 0.5rem;
   font-weight: 500;
+  font-size: 0.8125rem;
   cursor: pointer;
   transition: all 0.2s;
+  width: auto;
+  max-width: fit-content;
+  white-space: nowrap;
 }
 
 .btn-success:hover {
@@ -246,11 +253,15 @@
   background: #ef4444;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0.4375rem 0.875rem;
   border-radius: 0.5rem;
   font-weight: 500;
+  font-size: 0.8125rem;
   cursor: pointer;
   transition: all 0.2s;
+  width: auto;
+  max-width: fit-content;
+  white-space: nowrap;
 }
 
 .btn-danger:hover {
@@ -293,6 +304,14 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+}
+
+.test-header .btn-secondary {
+  width: auto;
+  max-width: fit-content;
+  padding: 0.4375rem 0.875rem;
+  font-size: 0.8125rem;
+  white-space: nowrap;
 }
 
 .test-progress {
@@ -361,6 +380,22 @@
 .answer-input input:focus {
   outline: none;
   border-color: var(--primary);
+}
+
+.answer-input .btn-primary {
+  width: auto;
+  max-width: fit-content;
+  padding: 0.4375rem 0.875rem;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.answer-result .btn-primary {
+  width: auto;
+  max-width: fit-content;
+  padding: 0.4375rem 0.875rem;
+  font-size: 0.8125rem;
+  white-space: nowrap;
 }
 
 .answer-result {
