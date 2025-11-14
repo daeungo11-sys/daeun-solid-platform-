@@ -26,10 +26,16 @@
 
 .features {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
   margin-bottom: 3rem;
   align-items: stretch;
+}
+
+@media (max-width: 1024px) {
+  .features {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .feature-card {
@@ -50,9 +56,14 @@
 }
 
 .feature-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: var(--shadow-xl);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: var(--shadow);
   border-color: var(--primary-light);
+}
+
+.feature-card:active {
+  transform: translateY(-2px) scale(1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .feature-card::before {
@@ -207,6 +218,12 @@
     font-size: 1rem;
   }
 
+  .features {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
   .features {
     grid-template-columns: 1fr;
   }

@@ -62,12 +62,12 @@ export default function Home() {
           </div>
         </Link>
 
-        <Link to="/ai-feedback" className="feature-card">
+        <Link to="/ai-coach" className="feature-card">
           <div className="icon-container ai-feedback">
             <Sparkles size={40} />
           </div>
-          <h2>{t.aiFeedbackTitle}</h2>
-          <p>{t.aiFeedbackDesc}</p>
+          <h2>{t.aiCoach}</h2>
+          <p>{t.aiCoachPageDesc}</p>
           <div className="feature-tags">
             <span className="tag"><Sparkles size={14} /> {t.levelReflected}</span>
             <span className="tag"><Target size={14} /> {t.instantAnswer}</span>

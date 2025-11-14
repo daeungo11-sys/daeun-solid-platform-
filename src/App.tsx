@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, NavLink, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, NavLink, Navigate, Link } from 'react-router-dom'
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import { ThemeProvider, useTheme } from './contexts/ThemeContext'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
@@ -26,15 +26,11 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="nav-container">
-        <div className="logo">
+        <Link to="/" className="logo">
           <Mic size={28} />
           <h1>{t.mainTitle}</h1>
-        </div>
+        </Link>
         <div className="nav-links">
-          <NavLink to="/" className={({ isActive }) => isActive ? 'active' : ''}>
-            <HomeIcon size={20} />
-            <span>{t.home}</span>
-          </NavLink>
           <NavLink to="/level-test" className={({ isActive }) => isActive ? 'active' : ''}>
             <ClipboardCheck size={20} />
             <span>{t.levelTest}</span>
@@ -67,7 +63,7 @@ function Navbar() {
             <Sparkles size={20} />
             <span>{t.aiCoach}</span>
           </NavLink>
-          <NavLink to="/calendar" className={({ isActive }) => isActive ? 'active' : ''}>
+          <NavLink to="/calendar" className={({ isActive }) => isActive ? 'active learning-record' : 'learning-record'}>
             <CalendarIcon size={20} />
             <span>{t.learningRecord}</span>
           </NavLink>
