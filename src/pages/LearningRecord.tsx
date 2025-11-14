@@ -54,8 +54,9 @@ export default function LearningRecord() {
     reading: { total: 0, completed: 0, averageScore: 0 }
   })
   const [showWeaknessDetail, setShowWeaknessDetail] = useState(false)
-  const [grammarAnalysis, setGrammarAnalysis] = useState<GrammarAnalysis[]>([])
-  const [vocabularyAnalysis, setVocabularyAnalysis] = useState<VocabularyAnalysis[]>([])
+  const [grammarAnalysis, setGrammarAnalysis] = useState<(GrammarAnalysis & { examples: Array<{ question: string; myAnswer: string; correctAnswer: string }> })[]>([])
+  const [vocabularyAnalysis, setVocabularyAnalysis] = useState<(VocabularyAnalysis & { examples: Array<{ question: string; myAnswer: string; correctAnswer: string }> })[]>([])
+  const [areaWeaknesses, setAreaWeaknesses] = useState<Array<{ area: string; count: number; score: number; examples: Array<{ question: string; myAnswer: string; correctAnswer: string }> }>>([])
   const [weaknesses, setWeaknesses] = useState<string[]>([])
 
   useEffect(() => {
@@ -180,53 +181,109 @@ export default function LearningRecord() {
   }, [wrongAnswers, statistics])
 
   const analyzeData = () => {
-    const grammarMap = new Map<string, number>()
-    const vocabMap = new Map<string, number>()
+    const grammarMap = new Map<string, { count: number; examples: Array<{ question: string; myAnswer: string; correctAnswer: string }> }>()
+    const vocabMap = new Map<string, { count: number; examples: Array<{ question: string; myAnswer: string; correctAnswer: string }> }>()
+    const areaMap = new Map<string, { count: number; score: number; examples: Array<{ question: string; myAnswer: string; correctAnswer: string }> }>()
     let totalErrors = 0
 
     wrongAnswers.forEach(answer => {
       totalErrors++
+      
+      // 영역별 분석
+      if (answer.type) {
+        const area = answer.type
+        const existing = areaMap.get(area) || { count: 0, score: 0, examples: [] }
+        existing.count++
+        existing.examples.push({
+          question: answer.question,
+          myAnswer: answer.myAnswer,
+          correctAnswer: answer.correctAnswer
+        })
+        areaMap.set(area, existing)
+      }
+      
+      // 문법 분석
       if (answer.grammar && Array.isArray(answer.grammar)) {
         answer.grammar.forEach(grammar => {
-          grammarMap.set(grammar, (grammarMap.get(grammar) || 0) + 1)
+          const existing = grammarMap.get(grammar) || { count: 0, examples: [] }
+          existing.count++
+          existing.examples.push({
+            question: answer.question,
+            myAnswer: answer.myAnswer,
+            correctAnswer: answer.correctAnswer
+          })
+          grammarMap.set(grammar, existing)
         })
       }
+      
+      // 어휘 분석
       if (answer.vocabulary && Array.isArray(answer.vocabulary)) {
         answer.vocabulary.forEach(vocab => {
-          vocabMap.set(vocab, (vocabMap.get(vocab) || 0) + 1)
+          const existing = vocabMap.get(vocab) || { count: 0, examples: [] }
+          existing.count++
+          existing.examples.push({
+            question: answer.question,
+            myAnswer: answer.myAnswer,
+            correctAnswer: answer.correctAnswer
+          })
+          vocabMap.set(vocab, existing)
         })
       }
     })
 
-    const grammarAnalysis: GrammarAnalysis[] = Array.from(grammarMap.entries())
-      .map(([grammar, count]) => ({
+    const grammarAnalysis: (GrammarAnalysis & { examples: Array<{ question: string; myAnswer: string; correctAnswer: string }> })[] = Array.from(grammarMap.entries())
+      .map(([grammar, data]) => ({
         grammar,
-        count,
-        percentage: totalErrors > 0 ? Math.round((count / totalErrors) * 100) : 0
+        count: data.count,
+        percentage: totalErrors > 0 ? Math.round((data.count / totalErrors) * 100) : 0,
+        examples: data.examples.slice(0, 3) // 최대 3개 예시만
       }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 5)
 
-    const vocabularyAnalysis: VocabularyAnalysis[] = Array.from(vocabMap.entries())
-      .map(([word, count]) => ({
+    const vocabularyAnalysis: (VocabularyAnalysis & { examples: Array<{ question: string; myAnswer: string; correctAnswer: string }> })[] = Array.from(vocabMap.entries())
+      .map(([word, data]) => ({
         word,
-        count,
-        difficulty: (count > 3 ? 'hard' : count > 1 ? 'medium' : 'easy') as 'easy' | 'medium' | 'hard'
+        count: data.count,
+        difficulty: (data.count > 3 ? 'hard' : data.count > 1 ? 'medium' : 'easy') as 'easy' | 'medium' | 'hard',
+        examples: data.examples.slice(0, 3) // 최대 3개 예시만
       }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 5)
+
+    // 영역별 약점 분석
+    const areaWeaknesses: Array<{ area: string; count: number; score: number; examples: Array<{ question: string; myAnswer: string; correctAnswer: string }> }> = Array.from(areaMap.entries())
+      .map(([area, data]) => ({
+        area,
+        count: data.count,
+        score: statistics[area as 'speaking' | 'writing' | 'reading']?.averageScore || 0,
+        examples: data.examples.slice(0, 2) // 최대 2개 예시만
+      }))
+      .filter(a => a.score < 80 && a.count > 0)
+      .sort((a, b) => a.score - b.score)
 
     setGrammarAnalysis(grammarAnalysis)
     setVocabularyAnalysis(vocabularyAnalysis)
 
     const newWeaknesses: string[] = []
-    if (statistics.speaking.averageScore < 70) newWeaknesses.push(t.areaWeakness || '말하기 영역')
-    if (statistics.writing.averageScore < 70) newWeaknesses.push(t.grammarWeakness || '문법 영역')
-    if (statistics.reading.averageScore < 70) newWeaknesses.push(t.areaWeakness || '읽기 영역')
+    if (statistics.speaking.averageScore < 70 && statistics.speaking.completed > 0) {
+      newWeaknesses.push(`${t.speaking || '말하기'}: ${statistics.speaking.averageScore.toFixed(1)}${t.pointUnit || '점'} (${t.belowAverage || '평균 미만'})`)
+    }
+    if (statistics.writing.averageScore < 70 && statistics.writing.completed > 0) {
+      newWeaknesses.push(`${t.writing || '쓰기'}: ${statistics.writing.averageScore.toFixed(1)}${t.pointUnit || '점'} (${t.belowAverage || '평균 미만'})`)
+    }
+    if (statistics.reading.averageScore < 70 && statistics.reading.completed > 0) {
+      newWeaknesses.push(`${t.reading || '읽기'}: ${statistics.reading.averageScore.toFixed(1)}${t.pointUnit || '점'} (${t.belowAverage || '평균 미만'})`)
+    }
     grammarAnalysis.forEach(g => {
-      if (g.percentage > 20) newWeaknesses.push(g.grammar)
+      if (g.percentage > 20) {
+        newWeaknesses.push(`${g.grammar} (${g.count}${t.errorCount || '회'}, ${g.percentage}%)`)
+      }
     })
     setWeaknesses(newWeaknesses)
+    
+    // 영역별 약점 데이터 저장 (모달에서 사용)
+    setAreaWeaknesses(areaWeaknesses)
   }
 
   const handleWeaknessClick = () => {
@@ -487,14 +544,26 @@ export default function LearningRecord() {
                     <div key={idx} className="weakness-item">
                       <div className="weakness-header">
                         <span className="weakness-name">{item.grammar}</span>
-                        <span className="weakness-score">{item.count}{t.errorCount || '회 오류'}</span>
+                        <span className="weakness-score">{item.count}{t.errorCount || '회 오류'} ({item.percentage}%)</span>
                       </div>
                       <div className="weakness-progress">
                         <div className="progress-bar">
                           <div className="progress-fill" style={{ width: `${item.percentage}%`, background: 'var(--danger, #ef4444)' }}></div>
                         </div>
                       </div>
-                      <p className="weakness-desc">{item.percentage}% {t.frequentMistakes || '이 문법 항목에서 자주 실수하고 있습니다.'}</p>
+                      <p className="weakness-desc">{t.frequentMistakes || '이 문법 항목에서 자주 실수하고 있습니다.'}</p>
+                      {item.examples.length > 0 && (
+                        <div className="weakness-examples">
+                          <p className="examples-title">{t.exampleMistakes || '실수 예시'}:</p>
+                          {item.examples.map((ex, exIdx) => (
+                            <div key={exIdx} className="example-item">
+                              <p className="example-question"><strong>{t.question || '문제'}:</strong> {ex.question}</p>
+                              <p className="example-answer"><strong>{t.yourAnswer || '내 답변'}:</strong> <span className="wrong-text">{ex.myAnswer}</span></p>
+                              <p className="example-answer"><strong>{t.correctAnswerLabel || '정답'}:</strong> <span className="correct-text">{ex.correctAnswer}</span></p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -510,28 +579,63 @@ export default function LearningRecord() {
                       </div>
                       <div className="weakness-progress">
                         <div className="progress-bar">
-                          <div className="progress-fill" style={{ width: `${item.count * 10}%`, background: 'var(--danger, #ef4444)' }}></div>
+                          <div className="progress-fill" style={{ width: `${Math.min(item.count * 10, 100)}%`, background: item.difficulty === 'hard' ? 'var(--danger, #ef4444)' : item.difficulty === 'medium' ? '#f59e0b' : '#10b981' }}></div>
                         </div>
                       </div>
                       <p className="weakness-desc">{t.difficultyAnalysis || '난이도'}: {item.difficulty === 'hard' ? t.hard || '어려움' : item.difficulty === 'medium' ? t.medium || '보통' : t.easy || '쉬움'}</p>
+                      {item.examples.length > 0 && (
+                        <div className="weakness-examples">
+                          <p className="examples-title">{t.exampleMistakes || '실수 예시'}:</p>
+                          {item.examples.map((ex, exIdx) => (
+                            <div key={exIdx} className="example-item">
+                              <p className="example-question"><strong>{t.question || '문제'}:</strong> {ex.question}</p>
+                              <p className="example-answer"><strong>{t.yourAnswer || '내 답변'}:</strong> <span className="wrong-text">{ex.myAnswer}</span></p>
+                              <p className="example-answer"><strong>{t.correctAnswerLabel || '정답'}:</strong> <span className="correct-text">{ex.correctAnswer}</span></p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
               )}
-              {weaknesses.length > 0 && (
+              {areaWeaknesses.length > 0 && (
                 <div className="weakness-section">
                   <h4>{t.areaWeakness || '영역별 약점'}</h4>
-                  {weaknesses.map((weakness, idx) => (
+                  {areaWeaknesses.map((area, idx) => (
                     <div key={idx} className="weakness-item">
                       <div className="weakness-header">
-                        <span className="weakness-name">{weakness}</span>
+                        <span className="weakness-name">
+                          {area.area === 'speaking' ? t.speaking || '말하기' :
+                           area.area === 'writing' ? t.writing || '쓰기' :
+                           area.area === 'reading' ? t.reading || '읽기' :
+                           area.area === 'levelTest' ? t.levelTest || '레벨 테스트' : area.area}
+                        </span>
+                        <span className="weakness-score">{area.score.toFixed(1)}{t.pointUnit || '점'} ({area.count}{t.errorCount || '회 오류'})</span>
+                      </div>
+                      <div className="weakness-progress">
+                        <div className="progress-bar">
+                          <div className="progress-fill" style={{ width: `${area.score}%`, background: area.score < 50 ? 'var(--danger, #ef4444)' : area.score < 70 ? '#f59e0b' : '#10b981' }}></div>
+                        </div>
                       </div>
                       <p className="weakness-desc">{t.belowAverage || '평균 점수가 80점 미만입니다. 더 많은 연습이 필요합니다.'}</p>
+                      {area.examples.length > 0 && (
+                        <div className="weakness-examples">
+                          <p className="examples-title">{t.exampleMistakes || '실수 예시'}:</p>
+                          {area.examples.map((ex, exIdx) => (
+                            <div key={exIdx} className="example-item">
+                              <p className="example-question"><strong>{t.question || '문제'}:</strong> {ex.question}</p>
+                              <p className="example-answer"><strong>{t.yourAnswer || '내 답변'}:</strong> <span className="wrong-text">{ex.myAnswer}</span></p>
+                              <p className="example-answer"><strong>{t.correctAnswerLabel || '정답'}:</strong> <span className="correct-text">{ex.correctAnswer}</span></p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
               )}
-              {grammarAnalysis.length === 0 && vocabularyAnalysis.length === 0 && weaknesses.length === 0 && (
+              {grammarAnalysis.length === 0 && vocabularyAnalysis.length === 0 && areaWeaknesses.length === 0 && (
                 <div className="no-weakness-message">
                   <p>{t.noWeaknessFound || '현재 발견된 약점이 없습니다. 계속 노력하세요!'}</p>
                 </div>

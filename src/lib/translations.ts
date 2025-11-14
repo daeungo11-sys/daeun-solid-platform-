@@ -328,6 +328,7 @@ export const translations = {
     medium: '보통',
     easy: '쉬움',
     close: '닫기',
+    exampleMistakes: '실수 예시',
   },
   en: {
     home: 'Home',
@@ -656,6 +657,7 @@ export const translations = {
     medium: 'Medium',
     easy: 'Easy',
     close: 'Close',
+    exampleMistakes: 'Example Mistakes',
   },
 };
 
