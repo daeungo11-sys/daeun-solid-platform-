@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Mic, Square, RotateCcw, Clock } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
 import { generateSpeakingFeedback } from '../lib/groq'
+import { updateMyPageStatistics } from '../lib/storage'
 import './Speaking.css'
 
 interface Feedback {
@@ -119,6 +120,18 @@ export default function Speaking() {
         grammar,
         overall
       });
+
+      // 점수 계산 및 통계 업데이트
+      // 피드백 내용 기반으로 점수 계산 (0-100점)
+      let score = 70; // 기본 점수
+      if (pronunciation.includes('훌륭') || pronunciation.includes('명확')) score += 15;
+      if (grammar.includes('정확') || grammar.includes('적절')) score += 10;
+      if (overall.includes('훌륭') || overall.includes('좋은')) score += 5;
+      if (pronunciation.includes('짧') || overall.includes('짧')) score -= 10;
+      score = Math.min(100, Math.max(0, score));
+
+      // 마이페이지 통계 업데이트
+      updateMyPageStatistics('speaking', score);
     } finally {
       setLoading(false);
     }

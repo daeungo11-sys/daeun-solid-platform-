@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { TrendingUp, BookOpen, AlertCircle, Bookmark, Target, FileText, X } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
-import { getWrongAnswers, getMyPageStatistics, type WrongAnswer, type MyPageStatistics, clearSharedData } from '../lib/storage'
+import { getWrongAnswers, getMyPageStatistics, type WrongAnswer, type MyPageStatistics } from '../lib/storage'
 import './MyPage.css'
 
 interface GrammarAnalysis {
@@ -30,15 +30,24 @@ export default function MyPage() {
   const [weaknesses, setWeaknesses] = useState<string[]>([])
 
   useEffect(() => {
-    // 기존 공유 데이터 초기화
-    clearSharedData()
-    
-    // 사용자별 데이터 로드
+    // 사용자별 데이터 로드 (초기화는 한 번만 실행)
     const loadedWrongAnswers = getWrongAnswers()
     const loadedStatistics = getMyPageStatistics()
     
     setWrongAnswers(loadedWrongAnswers)
     setStatistics(loadedStatistics)
+  }, [])
+
+  // 통계와 오답 노트가 업데이트될 때마다 다시 로드
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const loadedStatistics = getMyPageStatistics()
+      const loadedWrongAnswers = getWrongAnswers()
+      setStatistics(loadedStatistics)
+      setWrongAnswers(loadedWrongAnswers)
+    }, 2000) // 2초마다 통계 및 오답 노트 업데이트 확인
+
+    return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
@@ -112,14 +121,14 @@ export default function MyPage() {
         <div className="feature-card speaking">
           <div className="icon-container speaking">
             <Target size={40} />
-          </div>
+            </div>
           <h2>{t.speakingStats}</h2>
           <p>{t.completed}: {statistics.speaking.completed} / {statistics.speaking.total} | {t.averageScore}: {statistics.speaking.averageScore}</p>
           <div className="feature-tags">
             <span className="tag"><Target size={14} /> {statistics.speaking.completed} {t.completed}</span>
             <span className="tag"><TrendingUp size={14} /> {t.averageScore} {statistics.speaking.averageScore}</span>
-          </div>
-        </div>
+              </div>
+            </div>
 
         <div className="feature-card writing">
           <div className="icon-container writing">
@@ -130,8 +139,8 @@ export default function MyPage() {
           <div className="feature-tags">
             <span className="tag"><Target size={14} /> {statistics.writing.completed} {t.completed}</span>
             <span className="tag"><TrendingUp size={14} /> {t.averageScore} {statistics.writing.averageScore}</span>
-          </div>
-        </div>
+              </div>
+            </div>
 
         <div className="feature-card reading">
           <div className="icon-container reading">
@@ -148,7 +157,7 @@ export default function MyPage() {
         <div className="feature-card weakness" onClick={handleWeaknessClick} style={{ cursor: weaknesses.length > 0 ? 'pointer' : 'default' }}>
           <div className="icon-container weakness">
             <AlertCircle size={40} />
-          </div>
+      </div>
           <h2>{t.weaknessDiagnosis}</h2>
           <p>{weaknesses.length > 0 ? `${weaknesses.length}${t.weaknessFound}` : t.noWeakness}</p>
           <div className="feature-tags">
@@ -203,7 +212,7 @@ export default function MyPage() {
         <div className="feature-card wrong-answers">
           <div className="icon-container wrong-answers">
             <FileText size={40} />
-          </div>
+                </div>
           <h2>{t.wrongAnswerNote}</h2>
           <p>{wrongAnswers.length > 0 ? `${wrongAnswers.length}${t.wrongAnswersRecorded}` : t.noWrongAnswers}</p>
           <div className="feature-tags">
@@ -276,7 +285,7 @@ export default function MyPage() {
                     </div>
                   )}
                 </div>
-              </div>
+                </div>
 
               {grammarAnalysis.length > 0 && (
                 <div className="weakness-section">
@@ -287,27 +296,27 @@ export default function MyPage() {
                         <div className="weakness-header">
                           <span className="weakness-name">{g.grammar}</span>
                           <span className="weakness-score">{g.count}{t.errorCount} ({g.percentage.toFixed(1)}%)</span>
-                        </div>
+                  </div>
                         <div className="weakness-progress">
                           <div className="progress-bar">
                             <div className="progress-fill" style={{ width: `${g.percentage}%`, backgroundColor: '#f59e0b' }}></div>
-                          </div>
-                        </div>
-                        <p className="weakness-desc">{t.frequentMistakes}</p>
-                      </div>
-                    ))}
                   </div>
                 </div>
-              )}
+                        <p className="weakness-desc">{t.frequentMistakes}</p>
+                </div>
+                    ))}
+                  </div>
+                  </div>
+                )}
 
               {weaknesses.length === 0 && (
                 <div className="no-weakness-message">
                   <TrendingUp size={48} />
                   <p>{t.excellentScore}</p>
                   <p>{t.noWeaknessFound}</p>
-                </div>
-              )}
-            </div>
+                  </div>
+                )}
+              </div>
           </div>
         </div>
       )}

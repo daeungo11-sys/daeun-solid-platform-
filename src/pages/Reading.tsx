@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Clock, CheckCircle, XCircle } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
+import { updateMyPageStatistics, addWrongAnswer } from '../lib/storage'
 import './Reading.css'
 
 interface Question {
@@ -145,9 +146,24 @@ export default function Reading() {
 
   const handleAnswer = (optionIndex: number) => {
     const isCorrect = optionIndex === currentQ.correct
-    setAnswers([...answers, { questionId: currentQ.id, selected: optionIndex, isCorrect }])
+    const newAnswer = { questionId: currentQ.id, selected: optionIndex, isCorrect }
+    setAnswers([...answers, newAnswer])
     setShowFeedback(true)
     setTimeLeft(0)
+
+    // 오답인 경우 오답 노트에 저장
+    if (!isCorrect && optionIndex !== -1) {
+      addWrongAnswer({
+        question: currentQ.text,
+        type: '객관식',
+        myAnswer: currentQ.options[optionIndex] || '(답변 없음)',
+        correctAnswer: currentQ.options[currentQ.correct],
+        explanation: currentQ.explanation,
+        date: new Date().toISOString().split('T')[0],
+        grammar: [],
+        vocabulary: []
+      });
+    }
   }
 
   const handleNext = () => {
@@ -163,8 +179,16 @@ export default function Reading() {
   }
 
   const showResults = () => {
-    // This would typically show a results summary
-    alert(t.allQuestionsCompleted)
+    // 점수 계산 및 통계 업데이트
+    const correctCount = answers.filter(a => a.isCorrect).length;
+    const totalQuestions = questions.length;
+    const score = Math.round((correctCount / totalQuestions) * 100);
+
+    // 마이페이지 통계 업데이트
+    updateMyPageStatistics('reading', score);
+
+    // 결과 알림
+    alert(`${t.allQuestionsCompleted}\n${t.correctAnswers}: ${correctCount}/${totalQuestions} (${score}점)`)
   }
 
   const formatTime = (seconds: number) => {

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { PenTool, Clock, RotateCcw } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
 import { generateWritingFeedback } from '../lib/groq'
+import { updateMyPageStatistics } from '../lib/storage'
 import './Writing.css'
 
 interface Feedback {
@@ -120,6 +121,19 @@ export default function Writing() {
         structure,
         overall
       });
+
+      // 점수 계산 및 통계 업데이트
+      // 피드백 내용 기반으로 점수 계산 (0-100점)
+      let score = 70; // 기본 점수
+      if (grammar.includes('정확') || grammar.includes('적절')) score += 10;
+      if (vocabulary.includes('적절') || vocabulary.includes('좋')) score += 8;
+      if (structure.includes('명확') || structure.includes('좋')) score += 7;
+      if (overall.includes('훌륭') || overall.includes('좋은')) score += 5;
+      if (grammar.includes('짧') || overall.includes('짧')) score -= 10;
+      score = Math.min(100, Math.max(0, score));
+
+      // 마이페이지 통계 업데이트
+      updateMyPageStatistics('writing', score);
     } finally {
       setLoading(false);
     }

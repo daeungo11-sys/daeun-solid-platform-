@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { CheckCircle, XCircle, Clock, ArrowRight, ArrowLeft } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
+import { saveUserLevel, addWrongAnswer, type CEFRLevel } from '../lib/storage'
 import './LevelTest.css'
 
 interface Question {
@@ -260,6 +261,54 @@ export default function LevelTest() {
       timeSpent
     })
     setIsFinished(true)
+
+    // 레벨 저장
+    const cefrLevel: CEFRLevel = 
+      level === 'Advanced' ? 'C1' :
+      level === 'Intermediate-High' ? 'B2' :
+      level === 'Intermediate' ? 'B1' :
+      level === 'Beginner-High' ? 'A2' : 'A1';
+    
+    saveUserLevel({
+      level: cefrLevel,
+      testDate: new Date().toISOString(),
+      score: percentage,
+      weaknesses,
+      strengths
+    });
+
+    // 오답 저장
+    questionResults.forEach((r) => {
+      if (!r.isCorrect) {
+        const q = r.question;
+        let myAnswer = '';
+        if (typeof r.userAnswer === 'string') {
+          myAnswer = r.userAnswer;
+        } else if (Array.isArray(r.userAnswer)) {
+          myAnswer = r.userAnswer.join(', ');
+        }
+
+        let correctAnswer = '';
+        if (typeof q.correctAnswer === 'string') {
+          correctAnswer = q.correctAnswer;
+        } else if (Array.isArray(q.correctAnswer)) {
+          correctAnswer = q.correctAnswer.join(', ');
+        } else if (q.options && typeof q.correctAnswer === 'number') {
+          correctAnswer = q.options[q.correctAnswer] || '';
+        }
+
+        addWrongAnswer({
+          question: q.question || q.passage || '레벨 테스트 문제',
+          type: q.type || '객관식',
+          myAnswer: myAnswer || '(답변 없음)',
+          correctAnswer: correctAnswer || '',
+          explanation: `레벨 테스트 ${q.type} 문제`,
+          date: new Date().toISOString().split('T')[0],
+          grammar: [],
+          vocabulary: []
+        });
+      }
+    });
   }
 
   const formatTime = (seconds: number) => {
