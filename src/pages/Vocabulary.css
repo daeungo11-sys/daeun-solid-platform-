@@ -120,6 +120,8 @@
   font-size: 0.8125rem;
   white-space: nowrap;
   flex-shrink: 0;
+  max-width: fit-content;
+  width: auto;
 }
 
 .form-cancel-btn {
@@ -277,6 +279,8 @@
   padding: 0.4375rem 0.875rem;
   font-size: 0.8125rem;
   white-space: nowrap;
+  max-width: fit-content;
+  width: auto;
 }
 
 .test-container {

@@ -141,8 +141,19 @@ const mockQuestions: Question[] = [
   }
 ]
 
+// 문제 목록을 섞는 함수
+const shuffleQuestions = (questions: Question[]): Question[] => {
+  const shuffled = [...questions]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
 export default function LevelTest() {
   const { t } = useLanguage()
+  const [questions, setQuestions] = useState<Question[]>(() => shuffleQuestions(mockQuestions))
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<number, string>>({})
   const [timeSpent, setTimeSpent] = useState(0)
@@ -183,7 +194,7 @@ export default function LevelTest() {
     let maxScore = 0
     const questionResults: any[] = []
 
-    mockQuestions.forEach((q) => {
+    questions.forEach((q) => {
       maxScore += q.points
       const userAnswer = answers[q.id] || ''
       let isCorrect = false
@@ -395,7 +406,19 @@ export default function LevelTest() {
             </div>
           </div>
 
-          <button className="retry-button" onClick={() => window.location.reload()}>
+          <button className="retry-button"           onClick={() => {
+            // 새로운 문제 세트 생성 (더 많은 문제를 섞어서 선택)
+            const allQuestions = [...mockQuestions]
+            const shuffled = shuffleQuestions(allQuestions)
+            // 10개 문제를 랜덤하게 선택
+            const selectedQuestions = shuffled.slice(0, 10)
+            setQuestions(selectedQuestions)
+            setCurrentQuestion(0)
+            setAnswers({})
+            setTimeSpent(0)
+            setIsFinished(false)
+            setResults(null)
+          }}>
             {t.retryTest}
           </button>
         </div>
@@ -403,7 +426,7 @@ export default function LevelTest() {
     )
   }
 
-  const currentQ = mockQuestions[currentQuestion]
+  const currentQ = questions[currentQuestion]
   const currentAnswer = answers[currentQ.id] || ''
 
   return (
@@ -412,7 +435,7 @@ export default function LevelTest() {
         <h1>{t.levelTestPageTitle}</h1>
         <div className="test-info">
           <span className="question-counter">
-            {t.question} {currentQuestion + 1} {t.of} {mockQuestions.length}
+            {t.question} {currentQuestion + 1} {t.of} {questions.length}
           </span>
           <span className="timer">
             <Clock size={16} />
