@@ -29,6 +29,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 2rem;
 }
 
 .logo {
@@ -39,6 +40,7 @@
   text-decoration: none;
   cursor: pointer;
   transition: opacity 0.2s;
+  flex-shrink: 0;
 }
 
 .logo:hover {
@@ -55,8 +57,11 @@
 .nav-links {
   display: flex;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
+  flex: 1;
+  justify-content: flex-start;
+  margin-left: 2rem;
 }
 
 .nav-links a {
@@ -166,14 +171,22 @@
   color: var(--text-primary);
   font-size: 0.875rem;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .user-info svg {
   color: var(--primary);
+  flex-shrink: 0;
 }
 
 .user-info .nickname {
   color: var(--text-primary);
+}
+
+.control-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .logout-button {

@@ -264,10 +264,10 @@ export default function Vocabulary() {
             <p>{t.vocabularyPageDesc}</p>
           </div>
           <div className="header-actions">
-            <button onClick={startRecommendedTest} className="btn-primary">
+            <button onClick={startRecommendedTest} className="btn-secondary">
               {t.levelWordTest}
             </button>
-            <button onClick={startMyWordsTest} className="btn-primary">
+            <button onClick={startMyWordsTest} className="btn-secondary">
               {t.myWordTest}
             </button>
             <button onClick={() => setShowAddForm(!showAddForm)} className="btn-secondary">

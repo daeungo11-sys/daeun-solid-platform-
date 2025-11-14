@@ -91,7 +91,7 @@ export const translations = {
     friday: '금',
     saturday: '토',
     // Home page
-    heroSubtitle: '레벨 테스트, 말하기 연습, 쓰기 연습, 읽기 연습, 문장 교정, 회화 시뮬레이터, 어휘 학습, AI 코치, 학습 기록, 마이페이지 등 종합적인 영어 학습 기능을 제공합니다',
+    heroSubtitle: 'AI와 함께하는 종합 영어 학습 플랫폼',
     levelTestTitle: '레벨 테스트',
     levelTestDesc: '객관식, 서술형, 독해, 번역 14문항으로 실력을 측정하고 레벨별 강/약점을 분석받으세요.',
     levelTestQuestions: '14문항',
@@ -408,7 +408,7 @@ export const translations = {
     friday: 'Fri',
     saturday: 'Sat',
     // Home page
-    heroSubtitle: 'Comprehensive English learning features including level test, speaking practice, writing practice, reading practice, grammar correction, conversation simulator, vocabulary learning, AI coach, learning records, and my page.',
+    heroSubtitle: 'Comprehensive English learning platform with AI',
     levelTestTitle: 'Level Test',
     levelTestDesc: 'Measure your skills with 14 questions including multiple choice, essay, reading comprehension, and translation. Get personalized analysis of strengths and weaknesses.',
     levelTestQuestions: '14 Questions',
@@ -725,7 +725,7 @@ export const translations = {
     friday: '金',
     saturday: '土',
     // Home page
-    heroSubtitle: 'レベルテスト、スピーキング練習、ライティング練習、リーディング練習、文法チェック、会話シミュレーター、語彙学習、AIコーチ、学習記録、マイページなど総合的な英語学習機能を提供します',
+    heroSubtitle: 'AIと一緒に総合的な英語学習プラットフォーム',
     levelTestTitle: 'レベルテスト',
     levelTestDesc: '選択式、記述式、読解、翻訳14問で実力を測定し、レベル別の強み・弱みを分析してもらいます。',
     levelTestQuestions: '14問',
@@ -1042,7 +1042,7 @@ export const translations = {
     friday: '五',
     saturday: '六',
     // Home page
-    heroSubtitle: '提供综合英语学习功能，包括水平测试、口语练习、写作练习、阅读练习、语法检查、对话模拟器、词汇学习、AI教练、学习记录和我的页面',
+    heroSubtitle: '与AI一起进行综合英语学习平台',
     levelTestTitle: '水平测试',
     levelTestDesc: '通过14道题（包括选择题、论述题、阅读理解和翻译）测量您的水平，并获得个性化的强弱项分析。',
     levelTestQuestions: '14题',

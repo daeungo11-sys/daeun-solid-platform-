@@ -6,9 +6,8 @@ import Home from './pages/Home'
 import Speaking from './pages/Speaking'
 import Writing from './pages/Writing'
 import Reading from './pages/Reading'
-import Calendar from './pages/Calendar'
+import LearningRecord from './pages/LearningRecord'
 import LevelTest from './pages/LevelTest'
-import MyPage from './pages/MyPage'
 import Correction from './pages/Correction'
 import Simulator from './pages/Simulator'
 import Vocabulary from './pages/Vocabulary'
@@ -28,7 +27,6 @@ function Navbar() {
   // 현재 경로가 드롭다운 옵션 중 하나인지 확인
   const isWritingOrCorrection = location.pathname === '/writing' || location.pathname === '/correction';
   const isSpeakingOrSimulator = location.pathname === '/speaking' || location.pathname === '/simulator';
-  const isCalendarOrMypage = location.pathname === '/calendar' || location.pathname === '/mypage';
 
   return (
     <nav className="navbar">
@@ -72,15 +70,10 @@ function Navbar() {
             <Sparkles size={20} />
             <span>{t.aiCoach}</span>
           </NavLink>
-          <DropdownMenu
-            label={t.learningRecordAndMypage || '학습 기록/마이페이지'}
-            icon={<User size={20} />}
-            options={[
-              { path: '/calendar', label: t.learningRecord, icon: <CalendarIcon size={18} /> },
-              { path: '/mypage', label: t.mypage, icon: <User size={18} /> }
-            ]}
-            isActive={isCalendarOrMypage}
-          />
+          <NavLink to="/learning-record" className={({ isActive }) => isActive ? 'active' : ''}>
+            <User size={20} />
+            <span>{t.learningRecordAndMypage || '학습 기록/마이페이지'}</span>
+          </NavLink>
         </div>
         <div className="nav-controls">
           {isAuthenticated && nickname && (
@@ -89,23 +82,25 @@ function Navbar() {
               <span className="nickname">{nickname}</span>
             </div>
           )}
-          <div className="language-selector">
-            <Languages size={18} />
-            <select value={language} onChange={(e) => setLanguage(e.target.value as any)}>
-              <option value="ko">한국어</option>
-              <option value="en">English</option>
-              <option value="ja">日本語</option>
-              <option value="zh">中文</option>
-            </select>
-          </div>
-          <button onClick={toggleTheme} className="theme-toggle" title={theme === 'dark' ? '라이트 모드' : '다크 모드'}>
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-          {isAuthenticated && (
-            <button onClick={logout} className="logout-button" title={t.logout || '로그아웃'}>
-              <LogOut size={18} />
+          <div className="control-buttons">
+            <div className="language-selector">
+              <Languages size={18} />
+              <select value={language} onChange={(e) => setLanguage(e.target.value as any)}>
+                <option value="ko">한국어</option>
+                <option value="en">English</option>
+                <option value="ja">日本語</option>
+                <option value="zh">中文</option>
+              </select>
+            </div>
+            <button onClick={toggleTheme} className="theme-toggle" title={theme === 'dark' ? '라이트 모드' : '다크 모드'}>
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </button>
-          )}
+            {isAuthenticated && (
+              <button onClick={logout} className="logout-button" title={t.logout || '로그아웃'}>
+                <LogOut size={18} />
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </nav>
@@ -142,8 +137,7 @@ function AppContent() {
             <Route path="/simulator" element={<ProtectedRoute><Simulator /></ProtectedRoute>} />
             <Route path="/vocabulary" element={<ProtectedRoute><Vocabulary /></ProtectedRoute>} />
             <Route path="/ai-coach" element={<ProtectedRoute><AICoach /></ProtectedRoute>} />
-            <Route path="/calendar" element={<ProtectedRoute><Calendar /></ProtectedRoute>} />
-            <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
+            <Route path="/learning-record" element={<ProtectedRoute><LearningRecord /></ProtectedRoute>} />
             <Route path="*" element={<Navigate to={isAuthenticated ? "/" : "/login"} replace />} />
           </Routes>
         </main>
