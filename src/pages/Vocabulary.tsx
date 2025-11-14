@@ -327,7 +327,7 @@ export default function Vocabulary() {
             </div>
             <div className="form-actions">
               <button type="submit" className="btn-primary">{t.add}</button>
-              <button type="button" onClick={() => setShowAddForm(false)} className="btn-secondary">
+              <button type="button" onClick={() => setShowAddForm(false)} className="btn-secondary form-cancel-btn">
                 {t.cancelVocab}
               </button>
             </div>

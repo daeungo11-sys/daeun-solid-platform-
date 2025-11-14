@@ -452,17 +452,19 @@ export default function LearningRecord() {
               />
             </div>
             <div className="modal-actions">
-              {selectedEntry && (
-                <button onClick={handleDeleteEntry} className="btn-danger">
-                  <Trash2 size={16} />
-                  {t.delete}
+              <div className="modal-actions-left">
+                {selectedEntry && (
+                  <button onClick={handleDeleteEntry} className="btn-danger">
+                    <Trash2 size={16} />
+                    {t.delete}
+                  </button>
+                )}
+                <button onClick={handleSaveEntry} className="btn-primary">
+                  {t.save}
                 </button>
-              )}
+              </div>
               <button onClick={() => setShowModal(false)} className="btn-secondary">
                 {t.cancel}
-              </button>
-              <button onClick={handleSaveEntry} className="btn-primary">
-                {t.save}
               </button>
             </div>
           </div>
