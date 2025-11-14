@@ -1,7 +1,7 @@
 // Groq API 유틸리티
 
 const API_BASE_URL = 'https://api.groq.com/openai/v1';
-const MODEL = 'llama-3.1-70b-versatile'; // 또는 'mixtral-8x7b-32768'
+const MODEL = 'llama-3.1-8b-instant'; // llama-3.1-70b-versatile이 지원 중단되어 llama-3.1-8b-instant로 변경
 
 function getApiKey(): string {
   // Vite에서는 VITE_ 접두사가 필요합니다
