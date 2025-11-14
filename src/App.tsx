@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, NavLink, Navigate, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, NavLink, Navigate, Link, useLocation } from 'react-router-dom'
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import { ThemeProvider, useTheme } from './contexts/ThemeContext'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
@@ -14,6 +14,7 @@ import Simulator from './pages/Simulator'
 import Vocabulary from './pages/Vocabulary'
 import AICoach from './pages/AICoach'
 import Login from './pages/Login'
+import DropdownMenu from './components/DropdownMenu'
 import { Home as HomeIcon, Mic, PenTool, BookOpen, Calendar as CalendarIcon, ClipboardCheck, User, Sparkles, Languages, Moon, Sun, MessageSquare, BookOpenText, LogOut } from 'lucide-react'
 import './App.css'
 
@@ -22,6 +23,12 @@ function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const { language, setLanguage } = useLanguage();
   const { isAuthenticated, nickname, logout } = useAuth();
+  const location = useLocation();
+
+  // 현재 경로가 드롭다운 옵션 중 하나인지 확인
+  const isWritingOrCorrection = location.pathname === '/writing' || location.pathname === '/correction';
+  const isSpeakingOrSimulator = location.pathname === '/speaking' || location.pathname === '/simulator';
+  const isCalendarOrMypage = location.pathname === '/calendar' || location.pathname === '/mypage';
 
   return (
     <nav className="navbar">
@@ -35,25 +42,27 @@ function Navbar() {
             <ClipboardCheck size={20} />
             <span>{t.levelTest}</span>
           </NavLink>
-          <NavLink to="/correction" className={({ isActive }) => isActive ? 'active' : ''}>
-            <PenTool size={20} />
-            <span>{t.correction}</span>
-          </NavLink>
-          <NavLink to="/speaking" className={({ isActive }) => isActive ? 'active' : ''}>
-            <Mic size={20} />
-            <span>{t.speaking}</span>
-          </NavLink>
-          <NavLink to="/writing" className={({ isActive }) => isActive ? 'active' : ''}>
-            <PenTool size={20} />
-            <span>{t.writing}</span>
-          </NavLink>
+          <DropdownMenu
+            label={t.writingAndCorrection || '쓰기/교정'}
+            icon={<PenTool size={20} />}
+            options={[
+              { path: '/writing', label: t.writing, icon: <PenTool size={18} /> },
+              { path: '/correction', label: t.correction, icon: <PenTool size={18} /> }
+            ]}
+            isActive={isWritingOrCorrection}
+          />
+          <DropdownMenu
+            label={t.speakingAndSimulator || '말하기/회화'}
+            icon={<Mic size={20} />}
+            options={[
+              { path: '/speaking', label: t.speaking, icon: <Mic size={18} /> },
+              { path: '/simulator', label: t.simulator, icon: <MessageSquare size={18} /> }
+            ]}
+            isActive={isSpeakingOrSimulator}
+          />
           <NavLink to="/reading" className={({ isActive }) => isActive ? 'active' : ''}>
             <BookOpen size={20} />
             <span>{t.reading}</span>
-          </NavLink>
-          <NavLink to="/simulator" className={({ isActive }) => isActive ? 'active' : ''}>
-            <MessageSquare size={20} />
-            <span>{t.simulator}</span>
           </NavLink>
           <NavLink to="/vocabulary" className={({ isActive }) => isActive ? 'active' : ''}>
             <BookOpenText size={20} />
@@ -63,14 +72,15 @@ function Navbar() {
             <Sparkles size={20} />
             <span>{t.aiCoach}</span>
           </NavLink>
-          <NavLink to="/calendar" className={({ isActive }) => isActive ? 'active learning-record' : 'learning-record'}>
-            <CalendarIcon size={20} />
-            <span>{t.learningRecord}</span>
-          </NavLink>
-          <NavLink to="/mypage" className={({ isActive }) => isActive ? 'active' : ''}>
-            <User size={20} />
-            <span>{t.mypage}</span>
-          </NavLink>
+          <DropdownMenu
+            label={t.learningRecordAndMypage || '학습 기록/마이페이지'}
+            icon={<User size={20} />}
+            options={[
+              { path: '/calendar', label: t.learningRecord, icon: <CalendarIcon size={18} /> },
+              { path: '/mypage', label: t.mypage, icon: <User size={18} /> }
+            ]}
+            isActive={isCalendarOrMypage}
+          />
         </div>
         <div className="nav-controls">
           {isAuthenticated && nickname && (

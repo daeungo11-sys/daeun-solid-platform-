@@ -6,6 +6,10 @@ export const translations = {
     correction: '문장 교정',
     simulator: '회화 시뮬레이터',
     vocabulary: '단어장',
+    writingAndCorrection: '쓰기/교정',
+    speakingAndSimulator: '말하기/회화',
+    learningRecordAndMypage: '학습 기록/마이페이지',
+    learningRecordAndMypageDesc: '학습 기록을 관리하고 통계를 확인하세요',
     // Login
     loginTitle: '환영합니다!',
     loginSubtitle: '닉네임을 입력하여 시작하세요',
@@ -319,6 +323,10 @@ export const translations = {
     correction: 'Grammar Check',
     simulator: 'Conversation',
     vocabulary: 'Vocabulary',
+    writingAndCorrection: 'Writing/Correction',
+    speakingAndSimulator: 'Speaking/Conversation',
+    learningRecordAndMypage: 'Records/My Page',
+    learningRecordAndMypageDesc: 'Manage learning records and view statistics',
     // Login
     loginTitle: 'Welcome!',
     loginSubtitle: 'Enter your nickname to get started',
@@ -632,6 +640,10 @@ export const translations = {
     correction: '文法チェック',
     simulator: '会話',
     vocabulary: '単語帳',
+    writingAndCorrection: 'ライティング/校正',
+    speakingAndSimulator: 'スピーキング/会話',
+    learningRecordAndMypage: '学習記録/マイページ',
+    learningRecordAndMypageDesc: '学習記録を管理し、統計を確認します',
     // Login
     loginTitle: 'ようこそ！',
     loginSubtitle: 'ニックネームを入力して始めましょう',
@@ -945,6 +957,10 @@ export const translations = {
     correction: '语法检查',
     simulator: '对话',
     vocabulary: '单词本',
+    writingAndCorrection: '写作/校正',
+    speakingAndSimulator: '口语/对话',
+    learningRecordAndMypage: '学习记录/我的页面',
+    learningRecordAndMypageDesc: '管理学习记录并查看统计信息',
     // Login
     loginTitle: '欢迎！',
     loginSubtitle: '输入您的昵称开始使用',

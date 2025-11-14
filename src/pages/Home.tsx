@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Mic, PenTool, BookOpen, TrendingUp, Clock, Target, ClipboardCheck, User, Sparkles } from 'lucide-react'
+import { Mic, PenTool, BookOpen, TrendingUp, Clock, Target, ClipboardCheck, User, Sparkles, Calendar as CalendarIcon } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
 import './Home.css'
 
@@ -74,12 +74,12 @@ export default function Home() {
           </div>
         </Link>
 
-        <Link to="/mypage" className="feature-card">
+        <Link to="/calendar" className="feature-card">
           <div className="icon-container mypage">
-            <User size={40} />
+            <CalendarIcon size={40} />
           </div>
-          <h2>{t.mypageTitle}</h2>
-          <p>{t.mypageDesc}</p>
+          <h2>{t.learningRecordAndMypage || '학습 기록/마이페이지'}</h2>
+          <p>{t.learningRecordAndMypageDesc || '학습 기록을 관리하고 통계를 확인하세요'}</p>
           <div className="feature-tags">
             <span className="tag"><TrendingUp size={14} /> {t.statistics}</span>
             <span className="tag"><Target size={14} /> {t.analysis}</span>
