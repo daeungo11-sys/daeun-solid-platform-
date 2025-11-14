@@ -317,7 +317,12 @@ export default function LearningRecord() {
 
             {/* 약점 진단 */}
             <div className="feature-card weakness-card" onClick={handleWeaknessClick}>
-              <h3>{t.weaknessDiagnosis}</h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3>{t.weaknessDiagnosis}</h3>
+                <span style={{ color: 'var(--primary)', fontSize: '0.875rem', fontWeight: 600 }}>
+                  {t.clickToViewDetail || '클릭하여 상세 보기'}
+                </span>
+              </div>
               {weaknesses.length > 0 ? (
                 <p>{t.weaknessFound}: {weaknesses.slice(0, 3).join(', ')}</p>
               ) : (
@@ -463,6 +468,78 @@ export default function LearningRecord() {
               </div>
               <button onClick={() => setShowModal(false)} className="btn-secondary">
                 {t.cancel}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 약점 상세 모달 */}
+      {showWeaknessDetail && (
+        <div className="modal-overlay" onClick={() => setShowWeaknessDetail(false)}>
+          <div className="modal-content weakness-detail-content" onClick={(e) => e.stopPropagation()}>
+            <h3>{t.weaknessDiagnosisDetail || '약점 진단 상세'}</h3>
+            <div className="weakness-detail-content">
+              {grammarAnalysis.length > 0 && (
+                <div className="weakness-section">
+                  <h4>{t.grammarWeakness || '문법 약점'}</h4>
+                  {grammarAnalysis.map((item, idx) => (
+                    <div key={idx} className="weakness-item">
+                      <div className="weakness-header">
+                        <span className="weakness-name">{item.grammar}</span>
+                        <span className="weakness-score">{item.count}{t.errorCount || '회 오류'}</span>
+                      </div>
+                      <div className="weakness-progress">
+                        <div className="progress-bar">
+                          <div className="progress-fill" style={{ width: `${item.percentage}%`, background: 'var(--danger, #ef4444)' }}></div>
+                        </div>
+                      </div>
+                      <p className="weakness-desc">{item.percentage}% {t.frequentMistakes || '이 문법 항목에서 자주 실수하고 있습니다.'}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {vocabularyAnalysis.length > 0 && (
+                <div className="weakness-section">
+                  <h4>{t.vocabularyWeakness || '어휘 약점'}</h4>
+                  {vocabularyAnalysis.map((item, idx) => (
+                    <div key={idx} className="weakness-item">
+                      <div className="weakness-header">
+                        <span className="weakness-name">{item.word}</span>
+                        <span className="weakness-score">{item.count}{t.errorCount || '회 오류'}</span>
+                      </div>
+                      <div className="weakness-progress">
+                        <div className="progress-bar">
+                          <div className="progress-fill" style={{ width: `${item.count * 10}%`, background: 'var(--danger, #ef4444)' }}></div>
+                        </div>
+                      </div>
+                      <p className="weakness-desc">{t.difficultyAnalysis || '난이도'}: {item.difficulty === 'hard' ? t.hard || '어려움' : item.difficulty === 'medium' ? t.medium || '보통' : t.easy || '쉬움'}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {weaknesses.length > 0 && (
+                <div className="weakness-section">
+                  <h4>{t.areaWeakness || '영역별 약점'}</h4>
+                  {weaknesses.map((weakness, idx) => (
+                    <div key={idx} className="weakness-item">
+                      <div className="weakness-header">
+                        <span className="weakness-name">{weakness}</span>
+                      </div>
+                      <p className="weakness-desc">{t.belowAverage || '평균 점수가 80점 미만입니다. 더 많은 연습이 필요합니다.'}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {grammarAnalysis.length === 0 && vocabularyAnalysis.length === 0 && weaknesses.length === 0 && (
+                <div className="no-weakness-message">
+                  <p>{t.noWeaknessFound || '현재 발견된 약점이 없습니다. 계속 노력하세요!'}</p>
+                </div>
+              )}
+            </div>
+            <div className="modal-actions">
+              <button onClick={() => setShowWeaknessDetail(false)} className="btn-primary">
+                {t.close || '닫기'}
               </button>
             </div>
           </div>

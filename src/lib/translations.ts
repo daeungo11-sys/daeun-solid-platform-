@@ -322,6 +322,12 @@ export const translations = {
     frequentMistakes: '이 문법 항목에서 자주 실수하고 있습니다. 집중적으로 복습하세요.',
     noWeaknessFound: '현재 발견된 약점이 없습니다. 계속 노력하세요!',
     pointUnit: '점',
+    weaknessDiagnosisDetail: '약점 진단 상세',
+    vocabularyWeakness: '어휘 약점',
+    hard: '어려움',
+    medium: '보통',
+    easy: '쉬움',
+    close: '닫기',
   },
   en: {
     home: 'Home',
@@ -644,6 +650,12 @@ export const translations = {
     frequentMistakes: 'You frequently make mistakes in this grammar area. Please review intensively.',
     noWeaknessFound: 'No weaknesses found. Keep up the good work!',
     pointUnit: 'points',
+    weaknessDiagnosisDetail: 'Weakness Diagnosis Detail',
+    vocabularyWeakness: 'Vocabulary Weaknesses',
+    hard: 'Hard',
+    medium: 'Medium',
+    easy: 'Easy',
+    close: 'Close',
   },
 };
 

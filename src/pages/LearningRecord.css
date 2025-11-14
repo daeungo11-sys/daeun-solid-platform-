@@ -133,6 +133,8 @@
   padding: 1.5rem;
   box-shadow: var(--shadow);
   transition: all 0.3s;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .feature-card:hover {
@@ -144,6 +146,8 @@
   margin-bottom: 1rem;
   color: var(--text-primary);
   font-size: 1.25rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .stat-details {
@@ -155,6 +159,12 @@
 
 .weakness-card {
   cursor: pointer;
+}
+
+.weakness-card p {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .wrong-answers-list {
@@ -199,6 +209,12 @@
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.modal-content.weakness-detail-content {
+  max-width: 700px;
 }
 
 .modal-content h3 {
@@ -369,6 +385,91 @@
   background: var(--danger, #ef4444);
   border-color: var(--danger, #ef4444);
   color: white;
+}
+
+/* 약점 상세 모달 스타일 */
+.weakness-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.weakness-section {
+  margin-bottom: 2rem;
+}
+
+.weakness-section h4 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.weakness-item {
+  background: var(--background);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  margin-bottom: 1rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.weakness-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.weakness-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.weakness-score {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--danger, #ef4444);
+}
+
+.weakness-progress {
+  margin-bottom: 0.75rem;
+}
+
+.weakness-progress .progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.weakness-progress .progress-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.weakness-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.no-weakness-message {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-secondary);
+}
+
+.no-weakness-message p {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
 }
 
 @media (max-width: 768px) {
