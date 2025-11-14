@@ -14,7 +14,7 @@ import Vocabulary from './pages/Vocabulary'
 import AICoach from './pages/AICoach'
 import Login from './pages/Login'
 import DropdownMenu from './components/DropdownMenu'
-import { Home as HomeIcon, Mic, PenTool, BookOpen, Calendar as CalendarIcon, ClipboardCheck, User, Sparkles, Languages, Moon, Sun, MessageSquare, BookOpenText, LogOut } from 'lucide-react'
+import { Home as HomeIcon, Mic, PenTool, BookOpen, Calendar as CalendarIcon, ClipboardCheck, User, Sparkles, MessageSquare, BookOpenText } from 'lucide-react'
 import './App.css'
 
 function Navbar() {
@@ -82,25 +82,6 @@ function Navbar() {
               <span className="nickname">{nickname}</span>
             </div>
           )}
-          <div className="control-buttons">
-            <div className="language-selector">
-              <Languages size={18} />
-              <select value={language} onChange={(e) => setLanguage(e.target.value as any)}>
-                <option value="ko">한국어</option>
-                <option value="en">English</option>
-                <option value="ja">日本語</option>
-                <option value="zh">中文</option>
-              </select>
-            </div>
-            <button onClick={toggleTheme} className="theme-toggle" title={theme === 'dark' ? '라이트 모드' : '다크 모드'}>
-              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
-            {isAuthenticated && (
-              <button onClick={logout} className="logout-button" title={t.logout || '로그아웃'}>
-                <LogOut size={18} />
-              </button>
-            )}
-          </div>
         </div>
       </div>
     </nav>

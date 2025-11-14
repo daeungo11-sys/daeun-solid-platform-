@@ -47,24 +47,30 @@ export async function generateAICoachResponse(
     role: 'system',
     content: `당신은 친절하고 전문적인 영어 학습 코치입니다.
 
-역할:
+**역할:**
 - 영어 학습자의 질문에 명확하고 이해하기 쉽게 답변
 - 문법, 어휘, 표현, 학습 방법 등 모든 영어 관련 질문에 대응
 - 학습자의 레벨(${userLevel})을 고려하여 적절한 난이도로 설명
 - 긍정적이고 격려하는 톤 유지
 
-답변 스타일:
+**답변 스타일:**
 - 예시를 많이 들어서 설명
 - 복잡한 개념은 단계별로 설명
 - 실생활에서 바로 사용할 수 있는 실용적인 정보 제공
 - 필요시 영어 예문을 포함하되 설명은 사용자 언어로
 
-주의사항:
+**중요 규칙:**
+1. 사용자의 질문에만 답변하세요.
+2. 질문과 답변을 명확히 구분하세요.
+3. 불필요한 피드백이나 평가를 추가하지 마세요.
+4. 질문에 대한 직접적이고 정확한 답변만 제공하세요.
+
+**주의사항:**
 - 학습자의 실력을 무시하지 않기
 - 너무 어려운 용어는 쉽게 풀어서 설명
 - 항상 학습 동기를 부여하는 방향으로 답변
 
-**중요: ${languageInstruction}**`
+**언어: ${languageInstruction}**`
   };
 
   const messages: GroqMessage[] = [
@@ -143,7 +149,19 @@ export async function generateConversationResponse(
   const messages: GroqMessage[] = [
     {
       role: 'system',
-      content: `${systemPrompt} 응답은 간결하고 자연스럽게 2-3문장 이내로 해주세요. 영어로만 답변하세요.`
+      content: `${systemPrompt}
+
+**중요 규칙:**
+1. 시나리오 역할에 맞는 대화만 진행하세요.
+2. 사용자 메시지에 대한 응답만 제공하세요.
+3. 피드백이나 평가를 제공하지 마세요.
+4. 응답은 간결하고 자연스럽게 2-3문장 이내로 해주세요.
+5. 영어로만 답변하세요.
+
+**절대 하지 말 것:**
+- 피드백이나 평가 제공
+- 질문과 답변 혼합
+- 한국어 사용`
     },
     ...conversationHistory,
     { role: 'user', content: userMessage }
@@ -202,6 +220,37 @@ export async function evaluateResponse(
 ): Promise<{ evaluation: string; alternative: string }> {
   const apiKey = getApiKey();
 
+  const systemPrompt = `당신은 친절한 영어 선생님입니다.
+
+**중요 규칙:**
+1. 문맥에 대한 답변을 제공하지 마세요. 오직 사용자 답변에 대한 평가만 제공하세요.
+2. 질문과 피드백을 절대 섞지 마세요.
+3. 응답은 반드시 JSON 형식으로만 제공하세요.
+
+평가 기준:
+1. 문법 오류가 있는지 확인
+2. 어휘 선택이 자연스러운지
+3. 문맥에 적절한지
+4. 더 나은 표현 방법 제시
+
+응답 형식 (반드시 준수):
+{
+  "evaluation": "구체적인 피드백만 (한국어로, 문법/어휘/표현에 대한 평가. 좋은 점과 개선할 점을 모두 언급)",
+  "alternative": "더 자연스럽고 원어민스러운 표현만 (영어로)"
+}
+
+**절대 하지 말 것:**
+- 문맥에 대한 답변 제공
+- 질문과 피드백 혼합
+- JSON 형식 외의 응답`;
+
+  const userPrompt = `영어 답변 평가 요청:
+
+문맥: ${context}
+사용자 답변: ${userResponse}
+
+위 사용자 답변에 대한 구체적인 피드백과 더 나은 표현만 알려주세요. 문맥에 대한 답변은 하지 마세요.`;
+
   try {
     const response = await fetch(`${API_BASE_URL}/chat/completions`, {
       method: 'POST',
@@ -214,33 +263,14 @@ export async function evaluateResponse(
         messages: [
           {
             role: 'system',
-            content: `당신은 친절한 영어 선생님입니다. 사용자의 영어 답변을 평가하고 구체적인 피드백을 제공해주세요.
-
-평가 기준:
-1. 문법 오류가 있는지 확인
-2. 어휘 선택이 자연스러운지
-3. 문맥에 적절한지
-4. 더 나은 표현 방법 제시
-
-응답은 반드시 다음 JSON 형식으로 해주세요:
-{
-  "evaluation": "구체적인 피드백 (한국어로, 문법/어휘/표현에 대한 평가. 좋은 점과 개선할 점을 모두 언급)",
-  "alternative": "더 자연스럽고 원어민스러운 표현 (영어로)"
-}
-
-예시:
-- 문법이 정확하면: "문법이 정확해요! 다만 좀 더 자연스럽게 표현하려면..."
-- 오류가 있으면: "Good try! 하지만 '시제' 부분에서 과거형을 사용해야 해요..."
-- 자연스러우면: "완벽해요! 원어민처럼 자연스러운 표현이에요!"
-
-해석이 아닌, 학습자에게 도움이 되는 피드백을 주세요.`
+            content: systemPrompt
           },
           {
             role: 'user',
-            content: `문맥: ${context}\n\n사용자 답변: ${userResponse}\n\n이 답변에 대한 구체적인 피드백과 더 나은 표현을 알려주세요.`
+            content: userPrompt
           }
         ],
-        temperature: 0.5,
+        temperature: 0.3,
         response_format: { type: 'json_object' },
       }),
     });
@@ -283,23 +313,33 @@ export async function generateSpeakingFeedback(
 ): Promise<{ pronunciation: string; grammar: string; overall: string }> {
   const apiKey = getApiKey();
 
-  const prompt = `다음은 영어 말하기 연습입니다.
+  const systemPrompt = `당신은 전문적인 영어 말하기 평가자입니다. 
+
+**중요 규칙:**
+1. 질문에 대한 답변을 제공하지 마세요. 오직 피드백만 제공하세요.
+2. 사용자의 답변 내용을 평가하고 개선점을 제시하세요.
+3. 질문과 피드백을 절대 섞지 마세요.
+4. 응답은 반드시 JSON 형식으로만 제공하세요.
+
+평가 항목:
+- 발음 (pronunciation): 발음의 명확성, 강세, 억양에 대한 구체적인 피드백
+- 문법 (grammar): 문법 사용의 정확성과 개선점
+- 전체 평가 (overall): 종합적인 평가와 개선 제안
+
+응답 형식 (반드시 준수):
+{
+  "pronunciation": "발음 피드백만 (한국어)",
+  "grammar": "문법 피드백만 (한국어)",
+  "overall": "전체 평가만 (한국어)"
+}`;
+
+  const userPrompt = `영어 말하기 연습 평가 요청:
 
 질문: ${question}
 녹음 시간: ${recordingDuration}초
 ${transcript ? `전사된 텍스트: ${transcript}` : '음성 녹음만 제공됨'}
 
-다음 세 가지 항목에 대해 한국어로 피드백을 제공해주세요:
-1. 발음 (pronunciation): 발음의 명확성, 강세, 억양에 대한 피드백
-2. 문법 (grammar): 문법 사용의 정확성과 개선점
-3. 전체 평가 (overall): 종합적인 평가와 개선 제안
-
-응답은 반드시 다음 JSON 형식으로 해주세요:
-{
-  "pronunciation": "발음 피드백",
-  "grammar": "문법 피드백",
-  "overall": "전체 평가"
-}`;
+위 정보를 바탕으로 발음, 문법, 전체 평가에 대한 피드백만 제공해주세요. 질문에 대한 답변은 하지 마세요.`;
 
   try {
     const response = await fetch(`${API_BASE_URL}/chat/completions`, {
@@ -313,14 +353,14 @@ ${transcript ? `전사된 텍스트: ${transcript}` : '음성 녹음만 제공�
         messages: [
           {
             role: 'system',
-            content: '당신은 전문적인 영어 말하기 평가자입니다. 학습자에게 도움이 되는 구체적이고 건설적인 피드백을 제공하세요.'
+            content: systemPrompt
           },
           {
             role: 'user',
-            content: prompt
+            content: userPrompt
           }
         ],
-        temperature: 0.5,
+        temperature: 0.3,
         response_format: { type: 'json_object' },
       }),
     });
@@ -364,25 +404,35 @@ export async function generateWritingFeedback(
 ): Promise<{ grammar: string; vocabulary: string; structure: string; overall: string }> {
   const apiKey = getApiKey();
 
-  const prompt = `다음은 영어 쓰기 연습입니다.
+  const systemPrompt = `당신은 전문적인 영어 쓰기 평가자입니다.
+
+**중요 규칙:**
+1. 주제에 대한 답변을 제공하지 마세요. 오직 피드백만 제공하세요.
+2. 사용자가 작성한 텍스트를 평가하고 개선점을 제시하세요.
+3. 주제와 피드백을 절대 섞지 마세요.
+4. 응답은 반드시 JSON 형식으로만 제공하세요.
+
+평가 항목:
+- 문법 (grammar): 문법 사용의 정확성과 개선점
+- 어휘 (vocabulary): 어휘 선택의 적절성과 개선 제안
+- 구조 (structure): 에세이 구조와 논리적 흐름 평가
+- 전체 평가 (overall): 종합적인 평가와 개선 제안
+
+응답 형식 (반드시 준수):
+{
+  "grammar": "문법 피드백만 (한국어)",
+  "vocabulary": "어휘 피드백만 (한국어)",
+  "structure": "구조 피드백만 (한국어)",
+  "overall": "전체 평가만 (한국어)"
+}`;
+
+  const userPrompt = `영어 쓰기 연습 평가 요청:
 
 주제: ${topic}
 작성된 텍스트: ${text}
 단어 수: ${wordCount}
 
-다음 네 가지 항목에 대해 한국어로 피드백을 제공해주세요:
-1. 문법 (grammar): 문법 사용의 정확성과 개선점
-2. 어휘 (vocabulary): 어휘 선택의 적절성과 개선 제안
-3. 구조 (structure): 에세이 구조와 논리적 흐름 평가
-4. 전체 평가 (overall): 종합적인 평가와 개선 제안
-
-응답은 반드시 다음 JSON 형식으로 해주세요:
-{
-  "grammar": "문법 피드백",
-  "vocabulary": "어휘 피드백",
-  "structure": "구조 피드백",
-  "overall": "전체 평가"
-}`;
+위 텍스트를 바탕으로 문법, 어휘, 구조, 전체 평가에 대한 피드백만 제공해주세요. 주제에 대한 답변은 하지 마세요.`;
 
   try {
     const response = await fetch(`${API_BASE_URL}/chat/completions`, {
@@ -396,14 +446,14 @@ export async function generateWritingFeedback(
         messages: [
           {
             role: 'system',
-            content: '당신은 전문적인 영어 쓰기 평가자입니다. 학습자에게 도움이 되는 구체적이고 건설적인 피드백을 제공하세요.'
+            content: systemPrompt
           },
           {
             role: 'user',
-            content: prompt
+            content: userPrompt
           }
         ],
-        temperature: 0.5,
+        temperature: 0.3,
         response_format: { type: 'json_object' },
       }),
     });

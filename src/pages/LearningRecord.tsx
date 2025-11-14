@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Calendar as CalendarIcon, TrendingUp, BookOpen, AlertCircle, Bookmark, Target, FileText, X, Flag, Edit2, Trash2 } from 'lucide-react'
+import { Calendar as CalendarIcon, TrendingUp, BookOpen, AlertCircle, Bookmark, Target, FileText, X, Flag, Edit2, Trash2, Settings, Languages, Moon, Sun, LogOut } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
+import { useTheme } from '../contexts/ThemeContext'
+import { useAuth } from '../contexts/AuthContext'
 import { 
   getDiaryEntries, 
   addDiaryEntry, 
@@ -28,6 +30,9 @@ interface VocabularyAnalysis {
 
 export default function LearningRecord() {
   const { t } = useLanguage()
+  const { theme, toggleTheme } = useTheme()
+  const { language, setLanguage } = useLanguage()
+  const { logout } = useAuth()
   const [activeTab, setActiveTab] = useState<'calendar' | 'statistics'>('calendar')
   
   // Calendar 관련 상태
@@ -336,6 +341,54 @@ export default function LearningRecord() {
               ) : (
                 <p>{t.noWrongAnswers}</p>
               )}
+            </div>
+
+            {/* 설정 섹션 */}
+            <div className="feature-card settings-card">
+              <div className="settings-header">
+                <Settings size={24} />
+                <h3>{t.settings || '설정'}</h3>
+              </div>
+              
+              <div className="settings-group">
+                <label className="settings-label">
+                  <Languages size={20} />
+                  <span>{t.language || '언어'}</span>
+                </label>
+                <select 
+                  value={language} 
+                  onChange={(e) => setLanguage(e.target.value as any)}
+                  className="settings-select"
+                >
+                  <option value="ko">한국어</option>
+                  <option value="en">English</option>
+                  <option value="ja">日本語</option>
+                  <option value="zh">中文</option>
+                </select>
+              </div>
+
+              <div className="settings-group">
+                <label className="settings-label">
+                  {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+                  <span>{t.theme || '테마'}</span>
+                </label>
+                <button 
+                  onClick={toggleTheme}
+                  className="settings-button"
+                >
+                  {theme === 'dark' ? t.lightMode || '라이트 모드' : t.darkMode || '다크 모드'}
+                </button>
+              </div>
+
+              <div className="settings-group">
+                <button 
+                  onClick={logout}
+                  className="settings-button logout-btn"
+                >
+                  <LogOut size={20} />
+                  <span>{t.logout || '로그아웃'}</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
