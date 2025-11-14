@@ -7,11 +7,16 @@ function getApiKey(): string {
   // Vite에서는 VITE_ 접두사가 필요합니다
   const apiKey = import.meta.env.VITE_GROQ_API_KEY;
   
-  if (!apiKey) {
-    throw new Error('GROQ_API_KEY가 설정되지 않았습니다. 환경 변수를 확인해주세요.');
+  if (!apiKey || apiKey.trim() === '' || apiKey === 'your-groq-api-key-here') {
+    console.error('Groq API Key Error:', {
+      hasKey: !!apiKey,
+      keyLength: apiKey?.length || 0,
+      keyPrefix: apiKey?.substring(0, 10) || 'none'
+    });
+    throw new Error('Groq API 키가 설정되지 않았습니다. Vercel 환경 변수에 VITE_GROQ_API_KEY를 추가해주세요.');
   }
   
-  return apiKey;
+  return apiKey.trim();
 }
 
 export interface GroqMessage {
@@ -84,15 +89,33 @@ export async function generateAICoachResponse(
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`Groq API Error: ${errorData.error?.message || '알 수 없는 오류'}`);
+      const errorText = await response.text();
+      let errorData;
+      try {
+        errorData = JSON.parse(errorText);
+      } catch {
+        errorData = { message: errorText || '알 수 없는 오류' };
+      }
+      console.error('Groq API Error Response:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorData
+      });
+      throw new Error(`Groq API 오류 (${response.status}): ${errorData.error?.message || errorData.message || '알 수 없는 오류'}`);
     }
 
     const data = await response.json();
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      console.error('Invalid Groq API Response:', data);
+      throw new Error('Groq API 응답 형식이 올바르지 않습니다.');
+    }
     return data.choices[0].message.content;
   } catch (error) {
-    console.error('Groq API Error:', error);
-    throw error;
+    console.error('Groq API Error (AI Coach):', error);
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Groq API 호출 중 오류가 발생했습니다.');
   }
 }
 
@@ -142,15 +165,33 @@ export async function generateConversationResponse(
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`회화 생성 실패: ${errorData.error?.message || '알 수 없는 오류'}`);
+      const errorText = await response.text();
+      let errorData;
+      try {
+        errorData = JSON.parse(errorText);
+      } catch {
+        errorData = { message: errorText || '알 수 없는 오류' };
+      }
+      console.error('Groq API Error Response (Conversation):', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorData
+      });
+      throw new Error(`회화 생성 실패 (${response.status}): ${errorData.error?.message || errorData.message || '알 수 없는 오류'}`);
     }
 
     const data = await response.json();
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      console.error('Invalid Groq API Response (Conversation):', data);
+      throw new Error('Groq API 응답 형식이 올바르지 않습니다.');
+    }
     return data.choices[0].message.content;
   } catch (error) {
     console.error('Groq API Error (Conversation):', error);
-    throw error;
+    if (error instanceof Error && error.message.includes('API 키')) {
+      throw error;
+    }
+    throw new Error('회화 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
   }
 }
 
@@ -210,11 +251,27 @@ export async function evaluateResponse(
     }
 
     const data = await response.json();
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      console.error('Invalid Groq API Response (Evaluation):', data);
+      throw new Error('Groq API 응답 형식이 올바르지 않습니다.');
+    }
     const content = data.choices[0].message.content;
-    return JSON.parse(content);
+    try {
+      return JSON.parse(content);
+    } catch (parseError) {
+      console.error('JSON Parse Error (Evaluation):', parseError, 'Content:', content);
+      // JSON 파싱 실패 시 기본값 반환
+      return {
+        evaluation: 'Good try! Keep practicing to improve your English.',
+        alternative: content || userResponse
+      };
+    }
   } catch (error) {
     console.error('Groq API Error (Evaluation):', error);
-    throw error;
+    if (error instanceof Error && error.message.includes('API 키')) {
+      throw error;
+    }
+    throw new Error('평가 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
   }
 }
 
@@ -274,11 +331,28 @@ ${transcript ? `전사된 텍스트: ${transcript}` : '음성 녹음만 제공�
     }
 
     const data = await response.json();
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      console.error('Invalid Groq API Response (Speaking):', data);
+      throw new Error('Groq API 응답 형식이 올바르지 않습니다.');
+    }
     const content = data.choices[0].message.content;
-    return JSON.parse(content);
+    try {
+      return JSON.parse(content);
+    } catch (parseError) {
+      console.error('JSON Parse Error (Speaking):', parseError, 'Content:', content);
+      // JSON 파싱 실패 시 기본값 반환
+      return {
+        pronunciation: '발음 평가를 생성하는 중 오류가 발생했습니다.',
+        grammar: '문법 평가를 생성하는 중 오류가 발생했습니다.',
+        overall: '전체 평가를 생성하는 중 오류가 발생했습니다.'
+      };
+    }
   } catch (error) {
     console.error('Groq API Error (Speaking Feedback):', error);
-    throw error;
+    if (error instanceof Error && error.message.includes('API 키')) {
+      throw error;
+    }
+    throw new Error('피드백 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
   }
 }
 
@@ -340,11 +414,29 @@ export async function generateWritingFeedback(
     }
 
     const data = await response.json();
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      console.error('Invalid Groq API Response (Writing):', data);
+      throw new Error('Groq API 응답 형식이 올바르지 않습니다.');
+    }
     const content = data.choices[0].message.content;
-    return JSON.parse(content);
+    try {
+      return JSON.parse(content);
+    } catch (parseError) {
+      console.error('JSON Parse Error (Writing):', parseError, 'Content:', content);
+      // JSON 파싱 실패 시 기본값 반환
+      return {
+        grammar: '문법 평가를 생성하는 중 오류가 발생했습니다.',
+        vocabulary: '어휘 평가를 생성하는 중 오류가 발생했습니다.',
+        structure: '구조 평가를 생성하는 중 오류가 발생했습니다.',
+        overall: '전체 평가를 생성하는 중 오류가 발생했습니다.'
+      };
+    }
   } catch (error) {
     console.error('Groq API Error (Writing Feedback):', error);
-    throw error;
+    if (error instanceof Error && error.message.includes('API 키')) {
+      throw error;
+    }
+    throw new Error('피드백 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
   }
 }
 
@@ -395,11 +487,29 @@ export async function correctGrammar(sentence: string): Promise<{
     }
 
     const data = await response.json();
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      console.error('Invalid Groq API Response (Grammar):', data);
+      throw new Error('Groq API 응답 형식이 올바르지 않습니다.');
+    }
     const content = data.choices[0].message.content;
-    return JSON.parse(content);
+    try {
+      return JSON.parse(content);
+    } catch (parseError) {
+      console.error('JSON Parse Error (Grammar):', parseError, 'Content:', content);
+      // JSON 파싱 실패 시 기본값 반환
+      return {
+        original: sentence,
+        corrected: sentence,
+        reason: '문법 교정 중 오류가 발생했습니다.',
+        errorType: '오류 없음'
+      };
+    }
   } catch (error) {
     console.error('Groq API Error (Grammar Correction):', error);
-    throw error;
+    if (error instanceof Error && error.message.includes('API 키')) {
+      throw error;
+    }
+    throw new Error('문법 교정 중 오류가 발생했습니다. 다시 시도해주세요.');
   }
 }
 

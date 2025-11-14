@@ -54,7 +54,15 @@ export default function Correction() {
       updateProgress(0);
 
     } catch (err) {
-      setError(err instanceof Error ? err.message : t.grammarCheckFailed);
+      let errorMessage = t.grammarCheckFailed;
+      if (err instanceof Error) {
+        if (err.message.includes('API 키')) {
+          errorMessage = '⚠️ Groq API 키가 설정되지 않았습니다. Vercel 환경 변수에 VITE_GROQ_API_KEY를 추가해주세요.';
+        } else {
+          errorMessage = err.message;
+        }
+      }
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

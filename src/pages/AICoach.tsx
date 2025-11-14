@@ -638,11 +638,23 @@ If + 주어 + had + p.p., 주어 + would have + p.p.
       });
     } catch (error) {
       console.error('AI Coach Error:', error);
+      let errorMessage = '응답을 생성하는 중 오류가 발생했습니다.';
+      
+      if (error instanceof Error) {
+        if (error.message.includes('API 키')) {
+          errorMessage = 'Groq API 키가 설정되지 않았습니다. Vercel 환경 변수에 VITE_GROQ_API_KEY를 추가해주세요.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
       // 에러 발생 시 기본 응답 생성 함수 사용
       const fallbackResponse = generateResponse(userInput);
       const assistantMessage: Message = {
         role: 'assistant',
-        content: fallbackResponse,
+        content: errorMessage.includes('API 키') 
+          ? `⚠️ ${errorMessage}\n\n대신 기본 응답을 제공합니다:\n\n${fallbackResponse}`
+          : `⚠️ ${errorMessage}\n\n대신 기본 응답을 제공합니다:\n\n${fallbackResponse}`,
       };
       setMessages((prev) => [...prev, assistantMessage]);
       

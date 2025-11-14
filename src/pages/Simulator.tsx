@@ -197,11 +197,22 @@ export default function Simulator() {
       updateProgress(0);
     } catch (err) {
       console.error('Conversation error:', err);
+      
+      // API 키 오류인 경우 사용자에게 알림
+      if (err instanceof Error && err.message.includes('API 키')) {
+        alert('⚠️ Groq API 키가 설정되지 않았습니다.\nVercel 환경 변수에 VITE_GROQ_API_KEY를 추가해주세요.');
+      }
+      
       // 에러 발생 시 기본 응답 제공
       const fallbackResponse = getScenarioGreeting(selectedScenario);
       setMessages((prev) => [
         ...prev,
-        { role: 'assistant', content: 'I apologize, but I encountered an error. Could you please repeat that?' }
+        { 
+          role: 'assistant', 
+          content: err instanceof Error && err.message.includes('API 키')
+            ? '⚠️ API 키가 설정되지 않아 기본 응답을 제공합니다. Could you please repeat that?'
+            : 'I apologize, but I encountered an error. Could you please repeat that?'
+        }
       ]);
     } finally {
       setLoading(false);

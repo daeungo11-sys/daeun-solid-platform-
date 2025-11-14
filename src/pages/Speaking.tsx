@@ -92,6 +92,12 @@ export default function Speaking() {
       setFeedback(feedback);
     } catch (error) {
       console.error('Speaking feedback error:', error);
+      
+      // API 키 오류인 경우 사용자에게 알림
+      if (error instanceof Error && error.message.includes('API 키')) {
+        alert('⚠️ Groq API 키가 설정되지 않았습니다.\nVercel 환경 변수에 VITE_GROQ_API_KEY를 추가해주세요.');
+      }
+      
       // 에러 발생 시 기본 피드백 제공
       const recordingDuration = 180 - timeLeft;
       const isShort = recordingDuration < 60;
