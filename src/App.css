@@ -134,6 +134,46 @@
   transform: scale(1.05);
 }
 
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--background);
+  border-radius: 0.5rem;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.user-info svg {
+  color: var(--primary);
+}
+
+.user-info .nickname {
+  color: var(--text-primary);
+}
+
+.logout-button {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  transition: all 0.2s;
+}
+
+.logout-button:hover {
+  background: var(--danger, #ef4444);
+  border-color: var(--danger, #ef4444);
+  color: white;
+  transform: scale(1.05);
+}
+
 .main-content {
   flex: 1;
   max-width: 1400px;
@@ -221,6 +261,25 @@
   }
 
   .theme-toggle svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .user-info {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .user-info svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .logout-button {
+    padding: 0.375rem;
+  }
+
+  .logout-button svg {
     width: 16px;
     height: 16px;
   }

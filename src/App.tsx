@@ -1,6 +1,7 @@
-import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, NavLink, Navigate } from 'react-router-dom'
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import { ThemeProvider, useTheme } from './contexts/ThemeContext'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
 import Home from './pages/Home'
 import Speaking from './pages/Speaking'
 import Writing from './pages/Writing'
@@ -12,13 +13,15 @@ import Correction from './pages/Correction'
 import Simulator from './pages/Simulator'
 import Vocabulary from './pages/Vocabulary'
 import AICoach from './pages/AICoach'
-import { Home as HomeIcon, Mic, PenTool, BookOpen, Calendar as CalendarIcon, ClipboardCheck, User, Sparkles, Languages, Moon, Sun, MessageSquare, BookOpenText } from 'lucide-react'
+import Login from './pages/Login'
+import { Home as HomeIcon, Mic, PenTool, BookOpen, Calendar as CalendarIcon, ClipboardCheck, User, Sparkles, Languages, Moon, Sun, MessageSquare, BookOpenText, LogOut } from 'lucide-react'
 import './App.css'
 
 function Navbar() {
   const { t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const { language, setLanguage } = useLanguage();
+  const { isAuthenticated, nickname, logout } = useAuth();
 
   return (
     <nav className="navbar">
@@ -74,6 +77,12 @@ function Navbar() {
           </NavLink>
         </div>
         <div className="nav-controls">
+          {isAuthenticated && nickname && (
+            <div className="user-info">
+              <User size={16} />
+              <span className="nickname">{nickname}</span>
+            </div>
+          )}
           <div className="language-selector">
             <Languages size={18} />
             <select value={language} onChange={(e) => setLanguage(e.target.value as any)}>
@@ -86,30 +95,50 @@ function Navbar() {
           <button onClick={toggleTheme} className="theme-toggle" title={theme === 'dark' ? '라이트 모드' : '다크 모드'}>
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
+          {isAuthenticated && (
+            <button onClick={logout} className="logout-button" title={t.logout || '로그아웃'}>
+              <LogOut size={18} />
+            </button>
+          )}
         </div>
       </div>
     </nav>
   );
 }
 
+// 보호된 라우트 컴포넌트
+function ProtectedRoute({ children }: { children: React.ReactElement }) {
+  const { isAuthenticated } = useAuth();
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  return children;
+}
+
 function AppContent() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <Router>
       <div className="app">
-        <Navbar />
+        {isAuthenticated && <Navbar />}
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/level-test" element={<LevelTest />} />
-            <Route path="/correction" element={<Correction />} />
-            <Route path="/speaking" element={<Speaking />} />
-            <Route path="/writing" element={<Writing />} />
-            <Route path="/reading" element={<Reading />} />
-            <Route path="/simulator" element={<Simulator />} />
-            <Route path="/vocabulary" element={<Vocabulary />} />
-            <Route path="/ai-coach" element={<AICoach />} />
-            <Route path="/calendar" element={<Calendar />} />
-            <Route path="/mypage" element={<MyPage />} />
+            <Route path="/login" element={isAuthenticated ? <Navigate to="/" replace /> : <Login />} />
+            <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+            <Route path="/level-test" element={<ProtectedRoute><LevelTest /></ProtectedRoute>} />
+            <Route path="/correction" element={<ProtectedRoute><Correction /></ProtectedRoute>} />
+            <Route path="/speaking" element={<ProtectedRoute><Speaking /></ProtectedRoute>} />
+            <Route path="/writing" element={<ProtectedRoute><Writing /></ProtectedRoute>} />
+            <Route path="/reading" element={<ProtectedRoute><Reading /></ProtectedRoute>} />
+            <Route path="/simulator" element={<ProtectedRoute><Simulator /></ProtectedRoute>} />
+            <Route path="/vocabulary" element={<ProtectedRoute><Vocabulary /></ProtectedRoute>} />
+            <Route path="/ai-coach" element={<ProtectedRoute><AICoach /></ProtectedRoute>} />
+            <Route path="/calendar" element={<ProtectedRoute><Calendar /></ProtectedRoute>} />
+            <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
+            <Route path="*" element={<Navigate to={isAuthenticated ? "/" : "/login"} replace />} />
           </Routes>
         </main>
       </div>
@@ -121,7 +150,9 @@ function App() {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <AppContent />
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>
   )

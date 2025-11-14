@@ -114,6 +114,22 @@ export interface MyPageStatistics {
 export function getUserId(): string {
   if (typeof window === 'undefined') return 'default';
   
+  // 닉네임 기반으로 userId 생성 (로그인 시 닉네임이 있으면 사용)
+  const nickname = localStorage.getItem('userNickname');
+  if (nickname) {
+    // 닉네임을 기반으로 안정적인 userId 생성
+    const nicknameHash = nickname.toLowerCase().replace(/\s+/g, '_');
+    const userId = `user_${nicknameHash}_${Date.now()}`;
+    
+    // 기존 userId가 없거나 닉네임이 변경된 경우 업데이트
+    const existingUserId = localStorage.getItem('userId');
+    if (!existingUserId || !existingUserId.includes(nicknameHash)) {
+      localStorage.setItem('userId', userId);
+    }
+    return localStorage.getItem('userId') || userId;
+  }
+  
+  // 닉네임이 없는 경우 기존 방식 사용
   let userId = localStorage.getItem('userId');
   if (!userId) {
     // 고유 ID 생성: 타임스탬프 + 랜덤 문자열
