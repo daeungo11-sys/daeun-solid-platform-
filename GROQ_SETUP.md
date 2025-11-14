@@ -86,3 +86,4 @@ VITE_GROQ_API_KEY=your-groq-api-key-here
 - `mixtral-8x7b-32768`
 - `llama-3.1-8b-instant`
 
+

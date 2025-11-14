@@ -38,8 +38,11 @@ export default function DropdownMenu({ label, icon, options, isActive = false }:
   }, [isOpen]);
 
   const handleOptionClick = (path: string) => {
-    navigate(path);
     setIsOpen(false);
+    // 약간의 지연을 두어 드롭다운이 닫힌 후 네비게이션
+    setTimeout(() => {
+      navigate(path);
+    }, 100);
   };
 
   return (
