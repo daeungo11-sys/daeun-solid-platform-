@@ -27,8 +27,8 @@
 }
 
 .header-actions button {
-  padding: 0.5rem 0.875rem;
-  font-size: 0.875rem;
+  padding: 0.4375rem 0.75rem;
+  font-size: 0.8125rem;
   white-space: nowrap;
 }
 
@@ -109,21 +109,25 @@
 .form-actions {
   display: flex;
   gap: 0.75rem;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin-top: 1rem;
 }
 
 .form-actions .btn-primary,
 .form-actions .btn-secondary {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
+  padding: 0.4375rem 0.875rem;
+  font-size: 0.8125rem;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
 .form-cancel-btn {
-  margin-left: auto;
+  order: 2;
+}
+
+.form-actions .btn-primary {
+  order: 1;
 }
 
 .tabs {
@@ -270,8 +274,8 @@
 .empty-state .btn-primary {
   margin-top: 0;
   margin-bottom: 0;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
+  padding: 0.4375rem 0.875rem;
+  font-size: 0.8125rem;
   white-space: nowrap;
 }
 

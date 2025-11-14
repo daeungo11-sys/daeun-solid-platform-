@@ -127,7 +127,6 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-right: 0.5rem;
 }
 
 .language-selector {
@@ -175,6 +174,7 @@
   font-size: 0.875rem;
   font-weight: 500;
   white-space: nowrap;
+  margin-right: 0.75rem;
 }
 
 .user-info svg {
