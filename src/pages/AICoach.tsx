@@ -683,9 +683,22 @@ If + 주어 + had + p.p., 주어 + would have + p.p.
     <div className="ai-coach-page">
       <div className="ai-coach-container">
         <div className="coach-header">
-          <div>
-            <h1>🤖 {t.aiCoachPageTitle}</h1>
-            <p>{t.aiCoachPageDesc}</p>
+          <div className="coach-title-section">
+            <div className="robot-icon">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="12" y="16" width="24" height="20" rx="2" fill="#6366f1" stroke="#4f46e5" strokeWidth="2"/>
+                <circle cx="18" cy="24" r="2" fill="white"/>
+                <circle cx="30" cy="24" r="2" fill="white"/>
+                <rect x="18" y="30" width="12" height="2" rx="1" fill="white"/>
+                <rect x="10" y="20" width="4" height="4" rx="1" fill="#6366f1"/>
+                <rect x="34" y="20" width="4" height="4" rx="1" fill="#6366f1"/>
+                <rect x="20" y="10" width="8" height="6" rx="1" fill="#6366f1"/>
+              </svg>
+            </div>
+            <div>
+              <h1>{t.aiCoachPageTitle}</h1>
+              <p>{t.aiCoachPageDesc}</p>
+            </div>
           </div>
           {userLevel && (
             <div className="level-badge">

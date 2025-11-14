@@ -36,6 +36,8 @@ export default function Simulator() {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [speechEnabled, setSpeechEnabled] = useState(true);
+  const [textInput, setTextInput] = useState('');
+  const [inputMode, setInputMode] = useState<'voice' | 'text'>('voice');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const synthesisRef = useRef<SpeechSynthesis | null>(null);
@@ -377,27 +379,77 @@ export default function Simulator() {
               )}
             </div>
 
-            <div className="voice-controls">
-              <button
-                onClick={startListening}
-                disabled={loading || isSpeaking}
-                className={`mic-button ${isListening ? 'listening' : ''}`}
-                title={isListening ? t.recordingStop : t.recordingStart}
-              >
-                {isListening ? <Square size={24} /> : <Mic size={24} />}
-                <span>{isListening ? t.recordingInProgress : t.speak}</span>
-              </button>
-              <button
-                onClick={() => setSpeechEnabled(!speechEnabled)}
-                className={`speech-toggle ${speechEnabled ? 'enabled' : 'disabled'}`}
-                title={speechEnabled ? t.speechPlayOff : t.speechPlayOn}
-              >
-                {speechEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
-              </button>
-              {isSpeaking && (
-                <div className="speaking-indicator">
-                  <span className="pulse"></span>
-                  <span>{t.aiSpeaking}</span>
+            <div className="input-controls">
+              <div className="input-mode-toggle">
+                <button
+                  onClick={() => setInputMode('voice')}
+                  className={`mode-btn ${inputMode === 'voice' ? 'active' : ''}`}
+                >
+                  <Mic size={18} />
+                  <span>음성</span>
+                </button>
+                <button
+                  onClick={() => setInputMode('text')}
+                  className={`mode-btn ${inputMode === 'text' ? 'active' : ''}`}
+                >
+                  <span>💬</span>
+                  <span>텍스트</span>
+                </button>
+              </div>
+              
+              {inputMode === 'voice' ? (
+                <div className="voice-controls">
+                  <button
+                    onClick={startListening}
+                    disabled={loading || isSpeaking}
+                    className={`mic-button ${isListening ? 'listening' : ''}`}
+                    title={isListening ? t.recordingStop : t.recordingStart}
+                  >
+                    {isListening ? <Square size={24} /> : <Mic size={24} />}
+                    <span>{isListening ? t.recordingInProgress : t.speak}</span>
+                  </button>
+                  <button
+                    onClick={() => setSpeechEnabled(!speechEnabled)}
+                    className={`speech-toggle ${speechEnabled ? 'enabled' : 'disabled'}`}
+                    title={speechEnabled ? t.speechPlayOff : t.speechPlayOn}
+                  >
+                    {speechEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
+                  </button>
+                  {isSpeaking && (
+                    <div className="speaking-indicator">
+                      <span className="pulse"></span>
+                      <span>{t.aiSpeaking}</span>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-input-controls">
+                  <input
+                    type="text"
+                    value={textInput}
+                    onChange={(e) => setTextInput(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && textInput.trim() && !loading) {
+                        handleUserSpeech(textInput.trim());
+                        setTextInput('');
+                      }
+                    }}
+                    placeholder="메시지를 입력하세요..."
+                    className="text-input"
+                    disabled={loading}
+                  />
+                  <button
+                    onClick={() => {
+                      if (textInput.trim() && !loading) {
+                        handleUserSpeech(textInput.trim());
+                        setTextInput('');
+                      }
+                    }}
+                    disabled={!textInput.trim() || loading}
+                    className="send-button"
+                  >
+                    전송
+                  </button>
                 </div>
               )}
             </div>

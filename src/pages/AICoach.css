@@ -29,6 +29,30 @@
   border: 1px solid var(--border);
 }
 
+.coach-title-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.robot-icon {
+  flex-shrink: 0;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.robot-icon svg {
+  filter: drop-shadow(0 4px 8px rgba(99, 102, 241, 0.3));
+}
+
 .coach-header p {
   color: var(--text-secondary);
   font-size: 1.0625rem;
