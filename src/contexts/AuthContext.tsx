@@ -10,16 +10,22 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [nickname, setNickname] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [nickname, setNickname] = useState<string | null>('사용자');
 
   useEffect(() => {
-    // 앱 시작 시 저장된 로그인 정보 확인
+    // 앱 시작 시 저장된 로그인 정보 확인, 없으면 기본값 사용
     const savedNickname = localStorage.getItem('userNickname');
     if (savedNickname) {
       setNickname(savedNickname);
-      setIsAuthenticated(true);
+    } else {
+      // 기본 닉네임 설정
+      localStorage.setItem('userNickname', '사용자');
+      const nicknameHash = 'user'.toLowerCase().replace(/\s+/g, '_');
+      const userId = `user_${nicknameHash}_${Date.now()}`;
+      localStorage.setItem('userId', userId);
     }
+    setIsAuthenticated(true);
   }, []);
 
   const login = (nickname: string) => {

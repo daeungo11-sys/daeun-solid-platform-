@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Mic, PenTool, BookOpen, TrendingUp, Clock, Target, ClipboardCheck, User, Sparkles, Calendar as CalendarIcon } from 'lucide-react'
+import { Mic, PenTool, BookOpen, TrendingUp, Clock, Target, User } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
 import './Home.css'
 
@@ -14,18 +14,6 @@ export default function Home() {
       </div>
 
       <div className="features">
-        <Link to="/level-test" className="feature-card">
-          <div className="icon-container level-test">
-            <ClipboardCheck size={40} />
-          </div>
-          <h2>{t.levelTestTitle}</h2>
-          <p>{t.levelTestDesc}</p>
-          <div className="feature-tags">
-            <span className="tag"><Clock size={14} /> {t.levelTestQuestions}</span>
-            <span className="tag"><Target size={14} /> {t.customAnalysis}</span>
-          </div>
-        </Link>
-
         <Link to="/speaking" className="feature-card">
           <div className="icon-container speaking">
             <Mic size={40} />
@@ -62,23 +50,11 @@ export default function Home() {
           </div>
         </Link>
 
-        <Link to="/ai-coach" className="feature-card">
-          <div className="icon-container ai-feedback">
-            <Sparkles size={40} />
-          </div>
-          <h2>{t.aiCoach}</h2>
-          <p>{t.aiCoachPageDesc}</p>
-          <div className="feature-tags">
-            <span className="tag"><Sparkles size={14} /> {t.levelReflected}</span>
-            <span className="tag"><Target size={14} /> {t.instantAnswer}</span>
-          </div>
-        </Link>
-
-        <Link to="/calendar" className="feature-card">
+        <Link to="/learning-record" className="feature-card">
           <div className="icon-container mypage">
-            <CalendarIcon size={40} />
+            <User size={40} />
           </div>
-          <h2>{t.learningRecordAndMypage || '학습 기록/마이페이지'}</h2>
+          <h2>{t.learningRecordAndMypage || '학습 기록'}</h2>
           <p>{t.learningRecordAndMypageDesc || '학습 기록을 관리하고 통계를 확인하세요'}</p>
           <div className="feature-tags">
             <span className="tag"><TrendingUp size={14} /> {t.statistics}</span>
@@ -110,14 +86,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      <footer className="home-footer">
-        <div className="footer-divider"></div>
-        <p className="footer-text">
-          본 과제(결과물)는 2025년도 교육부 및 충청북도의 재원으로 충북RISE센터의 지원을 받아 수행된 
-          지역혁신중심 대학지원체계(RISE)의 결과입니다.(2025-RISE-11-004-02)
-        </p>
-      </footer>
     </div>
   )
 }
