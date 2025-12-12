@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react';
-import { LogIn, User } from 'lucide-react';
+import { LogIn } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import './Login.css';
@@ -37,7 +37,32 @@ export default function Login() {
       <div className="login-container">
         <div className="login-header">
           <div className="login-icon">
-            <User size={64} />
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              {/* 얼굴 */}
+              <circle cx="100" cy="100" r="80" fill="#FFE5B4" stroke="#FFD700" strokeWidth="3"/>
+              
+              {/* 왼쪽 눈 */}
+              <circle cx="75" cy="85" r="8" fill="#333"/>
+              <circle cx="77" cy="83" r="3" fill="#fff"/>
+              
+              {/* 오른쪽 눈 */}
+              <circle cx="125" cy="85" r="8" fill="#333"/>
+              <circle cx="127" cy="83" r="3" fill="#fff"/>
+              
+              {/* 미소 */}
+              <path d="M 70 120 Q 100 150 130 120" stroke="#333" strokeWidth="4" fill="none" strokeLinecap="round"/>
+              
+              {/* 볼 홍조 */}
+              <circle cx="60" cy="100" r="12" fill="#FFB6C1" opacity="0.6"/>
+              <circle cx="140" cy="100" r="12" fill="#FFB6C1" opacity="0.6"/>
+              
+              {/* 모자 (선택적) */}
+              <ellipse cx="100" cy="40" rx="50" ry="20" fill="#6366f1"/>
+              <ellipse cx="100" cy="35" rx="45" ry="15" fill="#4f46e5"/>
+              
+              {/* 별 장식 */}
+              <path d="M 100 25 L 102 30 L 107 30 L 103 33 L 105 38 L 100 35 L 95 38 L 97 33 L 93 30 L 98 30 Z" fill="#FFD700"/>
+            </svg>
           </div>
           <h1>{t.loginTitle || '환영합니다!'}</h1>
           <p>{t.loginSubtitle || '닉네임을 입력하여 시작하세요'}</p>

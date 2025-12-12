@@ -110,6 +110,14 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      <footer className="home-footer">
+        <div className="footer-divider"></div>
+        <p className="footer-text">
+          본 과제(결과물)는 2025년도 교육부 및 충청북도의 재원으로 충북RISE센터의 지원을 받아 수행된 
+          지역혁신중심 대학지원체계(RISE)의 결과입니다.(2025-RISE-11-004-02)
+        </p>
+      </footer>
     </div>
   )
 }
