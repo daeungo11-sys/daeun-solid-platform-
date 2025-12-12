@@ -37,7 +37,7 @@ function Navbar() {
           </NavLink>
           <NavLink to="/learning-record" className={({ isActive }) => isActive ? 'active' : ''}>
             <User size={20} />
-            <span>{t.learningRecordAndMypage || '학습 기록'}</span>
+            <span>{t.learningRecord || '학습 기록'}</span>
           </NavLink>
         </div>
       </div>

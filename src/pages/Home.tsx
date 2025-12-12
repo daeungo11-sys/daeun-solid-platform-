@@ -54,8 +54,8 @@ export default function Home() {
           <div className="icon-container mypage">
             <User size={40} />
           </div>
-          <h2>{t.learningRecordAndMypage || '학습 기록'}</h2>
-          <p>{t.learningRecordAndMypageDesc || '학습 기록을 관리하고 통계를 확인하세요'}</p>
+          <h2>{t.learningRecord || '학습 기록'}</h2>
+          <p>{t.learningRecordDesc || '학습 기록을 관리하세요'}</p>
           <div className="feature-tags">
             <span className="tag"><TrendingUp size={14} /> {t.statistics}</span>
             <span className="tag"><Target size={14} /> {t.analysis}</span>
