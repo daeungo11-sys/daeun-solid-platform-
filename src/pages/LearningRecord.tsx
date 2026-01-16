@@ -234,6 +234,8 @@ export default function LearningRecord() {
             </div>
           </div>
         </div>
+      )}
+
     </div>
   )
 }
